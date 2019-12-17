@@ -18,7 +18,9 @@ namespace Numbers
 			// if(result.IsInvalid)
 			//		return;
 
-			//BoardView.FormatWelcome();			
+			Console.WriteLine(BoardView.FormatWelcome());
+            Console.ReadLine();
+            Console.Clear();
 
 			// Initialize players
 			List<Player> players = InitializePlayers(1, 1, 2);
@@ -65,13 +67,14 @@ namespace Numbers
 					result = AI.BruteForce(currentPlayer, otherPlayers);
 				}
 
+                Console.Clear();
                 Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
 
                 // Push and pop players
                 otherPlayers.Add(currentPlayer);
 				currentPlayer = otherPlayers[0];
 				otherPlayers.RemoveAt(0);
-			}
+            }
 
 			// Wait for exit
 			Console.ReadKey();

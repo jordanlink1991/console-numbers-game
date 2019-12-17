@@ -11,26 +11,26 @@ namespace Numbers.Controllers
 		{
 			List<Tuple<Results, int, int>> bruteResults = new List<Tuple<Results, int, int>>();
 
-			// Clone player/hands to prevent update
-			Player tempPlayer = new Player(currentPlayer);			
+            // Clone player/hands to prevent update
+            Player tempPlayer = new Player(currentPlayer);
 
-			// Iterate through all opponents
-			for (int i = 0; i < otherPlayers.Count; i++)
-			{
-				Player otherPlayer = otherPlayers[i];
+            // Iterate through all opponents
+            for (int i = 0; i < otherPlayers.Count; i++)
+            {
+                Player otherPlayer = otherPlayers[i];
 
-				// Iterate through all current hands
-				for (int j = 0; j < tempPlayer.Hands.Count; j++)
-				{
-					Hand tempHand = tempPlayer.Hands[j];
+                // Iterate through all current hands
+                for (int j = 0; j < tempPlayer.Hands.Count; j++)
+                {
+                    Hand tempHand = tempPlayer.Hands[j];
 
-					// Initialize step counter
-					int steps = 0;
+                    // Initialize step counter
+                    int steps = 0;
 
-					// Iterate through all other players' hands
-					for (int k = 0; k < otherPlayer.Hands.Count; k++)
-					{
-						Hand otherHand = otherPlayer.Hands[k];
+                    // Iterate through all other players' hands
+                    for (int k = 0; k < otherPlayer.Hands.Count; k++)
+                    {
+                        Hand otherHand = otherPlayer.Hands[k];
 
 						// Iterate through all operators
 						foreach (Results.Operations op in Enum.GetValues(typeof(Results.Operations)))
@@ -54,18 +54,18 @@ namespace Numbers.Controllers
 									results.OperationType = op;
 									results.OpponentUsed = otherPlayer;
 
-									bruteResults.Add(new Tuple<Results, int, int>(results, checkValue, steps));
-								}
-							}
-						}
-					}
-				}
-			}
+                                    bruteResults.Add(new Tuple<Results, int, int>(results, checkValue, steps));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-			// Find the move with the least steps
-			Tuple<Results, int, int> bestResult = null;
-			foreach (Tuple<Results, int, int> bruteResult in bruteResults)
-				bestResult = bestResult == null ? bruteResult : bestResult.Item3 > bruteResult.Item3 ? bruteResult : bestResult;
+            // Find the move with the least steps
+            Tuple<Results, int, int> bestResult = null;
+            foreach (Tuple<Results, int, int> bruteResult in bruteResults)
+                bestResult = bestResult == null ? bruteResult : bestResult.Item3 > bruteResult.Item3 ? bruteResult : bestResult;
 
 			// Update hand!
 			if (bestResult != null)
@@ -80,21 +80,23 @@ namespace Numbers.Controllers
 		public static void Aggressive()
 		{
 
-		}
 
-		public static void Defensive()
-		{
+            //try to get close to 8 as possible (more options to 8)
+        }
 
-		}
+        public static void Defensive()
+        {
+
+        }
 
 		private static bool RunBruteForce(Player currentPlayer, List<Player> otherPlayers, ref int steps, bool isCurrentPlayerTurn)
 		{
 			if (ComputerInterpreter.IsWinner(currentPlayer))
 				return true;
 
-			foreach (Player otherPlayer in otherPlayers)
-				if (ComputerInterpreter.IsWinner(otherPlayer))
-					return false;
+            foreach (Player otherPlayer in otherPlayers)
+                if (ComputerInterpreter.IsWinner(otherPlayer))
+                    return false;
 
 			// Bootstrap
 			if (steps > 10)
@@ -115,10 +117,10 @@ namespace Numbers.Controllers
 				{
 					Player tempOtherPlayer = tempOtherPlayers[i];
 
-					// Iterate through all current hands
-					for (int j = 0; j < tempPlayer.Hands.Count; j++)
-					{
-						Hand tempHand = tempPlayer.Hands[j];
+                    // Iterate through all current hands
+                    for (int j = 0; j < tempPlayer.Hands.Count; j++)
+                    {
+                        Hand tempHand = tempPlayer.Hands[j];
 
 						// Iterate through all other players' hands
 						for (int k = 0; k < tempOtherPlayer.Hands.Count; k++)
@@ -149,18 +151,18 @@ namespace Numbers.Controllers
 					tempOtherAndCurrentPlayers.Add(new Player(currentPlayer)); // add "current" player
 					tempOtherAndCurrentPlayers.RemoveAt(i); // remove "current other" player
 
-					// Clone current player/hands to prevent update
-					Player tempOtherPlayer = tempOtherPlayers[i];
+                    // Clone current player/hands to prevent update
+                    Player tempOtherPlayer = tempOtherPlayers[i];
 
-					// Iterate through all current hands
-					for (int j = 0; j < tempOtherPlayer.Hands.Count; j++)
-					{
-						Hand tempOtherHand = tempOtherPlayer.Hands[j];
+                    // Iterate through all current hands
+                    for (int j = 0; j < tempOtherPlayer.Hands.Count; j++)
+                    {
+                        Hand tempOtherHand = tempOtherPlayer.Hands[j];
 
-						// Iterate through all other (and current) players
-						for (int k = 0; k < tempOtherAndCurrentPlayers.Count; k++)
-						{
-							Player tempOtherOrCurrentPlayer = tempOtherAndCurrentPlayers[k];
+                        // Iterate through all other (and current) players
+                        for (int k = 0; k < tempOtherAndCurrentPlayers.Count; k++)
+                        {
+                            Player tempOtherOrCurrentPlayer = tempOtherAndCurrentPlayers[k];
 
 							// Iterate through all other (and current) players' hands
 							for (int l = 0; l < tempOtherOrCurrentPlayer.Hands.Count; l++)
@@ -182,8 +184,61 @@ namespace Numbers.Controllers
 				}
 			}
 
-			// Unable to find path
-			return false;
-		}		
+            // Unable to find path
+            return false;
+        }
+
+        public static Results Random(Player currentPlayer, List<Player> otherPlayers)
+        {
+            Random randomPlayer;
+            int randPlayer;
+            Random randomHand;
+            int randHand;
+            int randHandComputer;
+            Player pickedPlayer;
+            Hand pickedHand;
+            Hand computerHand;
+            Array ops;
+            Random randomOp;
+            Results.Operations op;
+
+            randomPlayer = new Random();
+            randPlayer = randomPlayer.Next(0, otherPlayers.Count - 1);
+            randomHand = new Random();
+            randHand = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+            randHandComputer = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+
+            pickedPlayer = otherPlayers[randPlayer];
+            pickedHand = pickedPlayer.Hands[randHand];
+            computerHand = currentPlayer.Hands[randHandComputer];
+
+            ops = Enum.GetValues(typeof(Results.Operations));
+            randomOp = new Random();
+            op = (Results.Operations)ops.GetValue(randomOp.Next(0, 3));
+
+            int result = 0;
+            while (!ComputerInterpreter.ValidateMove(computerHand, pickedHand, op, out result))
+            {
+                randomPlayer = new Random();
+                randPlayer = randomPlayer.Next(0, otherPlayers.Count - 1);
+                randomHand = new Random();
+                randHand = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+                randHandComputer = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+
+                pickedPlayer = otherPlayers[randPlayer];
+                pickedHand = pickedPlayer.Hands[randHand];
+                computerHand = currentPlayer.Hands[randHandComputer];
+
+                ops = Enum.GetValues(typeof(Results.Operations));
+                randomOp = new Random();
+                op = (Results.Operations)ops.GetValue(randomOp.Next(0, 3));
+            }
+
+            Results r = new Results();
+            r.OpponentUsed = pickedPlayer;
+            r.HandUsed = pickedHand;
+            r.HandChanged = computerHand;
+            return r;
+        }
     }
 }
