@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class BoardView
 {
+	public static string FormatInputRequest(Player player) => $"Player {player.Name}: ";
+
     public string FormatPlayer(List<Player> players)
     {
         string msg = "";
@@ -20,6 +22,7 @@ public class BoardView
         }
         return msg;
     }
+
 	public string FormatError(int errorCode)
 	{
         if (errorCode == 1)
