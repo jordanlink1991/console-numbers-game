@@ -58,7 +58,7 @@ public class BaseInterpreter
     public static bool CheckDivide(Hand actionPlayerHand, Hand opponentHand, out int checkValue)
     {
         checkValue = 0;
-        if (actionPlayerHand.Value % opponentHand.Value != 0)
+        if (opponentHand.Value == 0  || actionPlayerHand.Value % opponentHand.Value != 0)
             return false;
 
         checkValue = (actionPlayerHand.Value / opponentHand.Value) % 10;

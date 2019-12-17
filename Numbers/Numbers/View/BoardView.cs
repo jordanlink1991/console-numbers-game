@@ -89,19 +89,19 @@ public static class BoardView
 
     public static string FormatVictory(Player player)
     {
-        return "Player " + player.Name + " Wins!!!\n";
+        return player.Name + " Wins!!!\n";
     }
 
     public static string FormatAction(Player currentPlayer, Player opponentPlayer, Results.Operations operation, Hand currentHand, Hand opponentHand){
         switch (operation){
             case Results.Operations.Plus:
-                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " PLUS " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " PLUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             case Results.Operations.Minus:
-                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MINUS " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " MINUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             case Results.Operations.Mutiple:
-                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MULTIPLES " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " MULTIPLES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             case Results.Operations.Division:
-                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " DIVIDES " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " DIVIDES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             default:
                 return "";
         }
