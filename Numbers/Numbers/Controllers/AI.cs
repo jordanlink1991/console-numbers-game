@@ -67,14 +67,18 @@ namespace Numbers.Controllers
             foreach (Tuple<Results, int, int> bruteResult in bruteResults)
                 bestResult = bestResult == null ? bruteResult : bestResult.Item3 > bruteResult.Item3 ? bruteResult : bestResult;
 
-			// Update hand!
-			if (bestResult != null)
+			Results resultToReturn;
+
+			// no best result... go random!
+			if (bestResult == null)
+				resultToReturn = Random(currentPlayer, otherPlayers);
+			else
 			{
 				bestResult.Item1.HandChanged.Value = bestResult.Item2;
-				return bestResult.Item1;
+				resultToReturn = bestResult.Item1;
 			}
 
-			return null;
+			return resultToReturn;
 		}
 		
 		public static void Aggressive()
@@ -100,7 +104,7 @@ namespace Numbers.Controllers
 
 			// Bootstrap
 			if (steps > 10)
-				return true;
+				return false;
 			
 			// Clone player/hands to prevent update
 			Player tempPlayer = new Player(currentPlayer);

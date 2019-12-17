@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
+[DebuggerDisplay("Name: {Name}")]
 public class Player
 {
 	/// <summary>
