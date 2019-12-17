@@ -8,15 +8,55 @@ public static class BoardView
     public static string FormatPlayer(List<Player> players)
     {
         string msg = "";
+        string msgName1 = "";
+        string msgName2 = "";
+        string msgTag1 = "";
+        string msgTag2 = "";
+        string msgNum1 = "";
+        string msgNum2 = "";
+        int counter = 1;
+
+        msg += "****************************************\n";
         foreach (Player p in players)
         {
-            msg += "********************\n";
-            msg += "Player: " + p.Name + "\n";
-            foreach (Hand h in p.Hands)
-                msg += "Hand: " + h.Tag + "|" + h.Value.ToString() + "\n";
+            if (counter%2 == 1)
+            {
+                msgName1 += p.Name + "      ";
+                foreach (Hand h in p.Hands)
+                {
+                    msgTag1 += h.Tag + "|";
+                    msgNum1 += h.Value + "|";
+                }
+                msgTag1 = msgTag1.Substring(0, msgTag1.Length - 1);
+                msgNum1 = msgNum1.Substring(0, msgTag1.Length - 1);
+                msgTag1 += "    ";
+                msgNum1 += "    ";
+            }
 
-            msg += "********************\n";
+            else
+            {
+                msgName2 += p.Name + "      ";
+                foreach (Hand h in p.Hands)
+                {
+                    msgTag2 += h.Tag + "|";
+                    msgNum2 += h.Value + "|";
+                }
+                msgTag2 = msgTag1.Substring(0, msgTag1.Length - 1);
+                msgNum2 = msgNum1.Substring(0, msgTag1.Length - 1);
+                msgTag2 += "    ";
+                msgNum2 += "    ";
+            }
+            counter++;
+            
         }
+        msg += msgName1 + "\n";
+        msg += msgTag1 + "\n";
+        msg += msgNum1 + "\n\n";
+        msg += msgNum2 + "\n";
+        msg += msgTag2 + "\n";
+        msg += msgName2 + "\n";
+        msg += "****************************************\n";
+
         return msg;
     }
 	public static string FormatError(Results.Errors errorCode)
