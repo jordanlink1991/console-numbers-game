@@ -58,7 +58,7 @@ namespace Numbers
 				//	break;
 				//}
 
-				Console.WriteLine(BoardView.FormatAction(currentPlayer, null, result.OperationType, null, null));
+				// Console.WriteLine(BoardView.FormatAction(currentPlayer, null, result.OperationType, null, null));
 
 				// Push and pop players
 				otherPlayers.Add(currentPlayer);
