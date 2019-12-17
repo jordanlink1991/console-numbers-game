@@ -91,11 +91,19 @@ namespace Numbers
 
 			// Add humans
 			for (int i = 0; i < humanPlayers; i++)
-				players.Add(new Player($"Player {(i+1).ToString()}", new List<Hand>(hands)));
+			{
+				List<Hand> playerHands = new List<Hand>();
+				hands.ForEach(x => playerHands.Add(new Hand(x)));
+				players.Add(new Player($"Player {(i + 1).ToString()}", new List<Hand>(playerHands)));
+			}
 
 			// Add computer
 			for (int i = 0; i < computerPlayers; i++)
-				players.Add(new Player($"Computer {(i + 1).ToString()}", new List<Hand>(hands), false));
+			{
+				List<Hand> playerHands = new List<Hand>();
+				hands.ForEach(x => playerHands.Add(new Hand(x)));
+				players.Add(new Player($"Computer {(i + 1).ToString()}", new List<Hand>(playerHands), false));
+			}
 
 			return players;
 		}
