@@ -67,4 +67,48 @@ public class BaseInterpreter
 
     #endregion Hand Calculations
 
+    #region Update Hand
+
+    /// <summary>
+    /// Method to be used by the Person Interpreter Class
+    /// </summary>
+    /// <param name="actionPlayerHand"></param>
+    /// <param name="checkValue"></param>
+    /// <param name="handGoal"></param>
+    /// <returns></returns>
+    public static bool UpdateHand(Hand actionPlayerHand, int checkValue, int handGoal)
+    {
+        if (checkValue == handGoal)
+        {
+            actionPlayerHand.Value = handGoal;
+            return true;
+        }
+        return false;
+    }
+
+
+    #endregion Update Hand
+
+    #region Winning Hand Check
+
+    public static bool IsWinner(Player player)
+    {
+        foreach (Hand hand in player.Hands)
+            if (!IsWinningHand(hand))
+                return false;
+
+        return true;
+    }
+
+
+    public static bool IsWinningHand(Hand hand)
+    {
+        if (hand.Value == 8)
+            return true;
+
+        return false;
+    }
+
+    #endregion Winning Hand Check
+
 }

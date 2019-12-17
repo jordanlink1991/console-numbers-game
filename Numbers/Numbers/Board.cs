@@ -48,16 +48,16 @@ namespace Numbers
 					Console.WriteLine(BoardView.FormatError(result.ErrorType));
 					continue;
 				}
-				//else if (result.Victory)
-				//{
-				//	Console.WriteLine(BoardView.FormatVictory(currentPlayer));
-				//	break;
-				//}
+                else if (result.Victory)
+                {
+                    Console.WriteLine(BoardView.FormatVictory(currentPlayer));
+                    break;
+                }
 
-				// Console.WriteLine(BoardView.FormatAction(currentPlayer, null, result.OperationType, null, null));
+                // Console.WriteLine(BoardView.FormatAction(currentPlayer, null, result.OperationType, null, null));
 
-				// Push and pop players
-				otherPlayers.Add(currentPlayer);
+                // Push and pop players
+                otherPlayers.Add(currentPlayer);
 				currentPlayer = otherPlayers[0];
 				otherPlayers.RemoveAt(0);
 			}

@@ -45,6 +45,7 @@ public class PersonInterpreter : BaseInterpreter
         
         if(actionPlayerHand == null)
         {
+            results.ValidMove = false;
             results.ErrorType = Results.Errors.InvalidHand;
             return results;
         }
@@ -52,6 +53,7 @@ public class PersonInterpreter : BaseInterpreter
         //Check to see if number is a valid number and if its inside the bounds of 0 and 10
         if (!int.TryParse(splitMove[1].ToString(), out int handGoal) || handGoal >= 10 || handGoal < 0)
         {
+            results.ValidMove = false;
             results.ErrorType = Results.Errors.InvalidNumber;
             return results;
         }
@@ -77,7 +79,6 @@ public class PersonInterpreter : BaseInterpreter
                 else if (CheckSubtract(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Minus;
-                    results.OperationType = Results.Operations.Plus;
                     results.OpponentUsed = opponent;
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
@@ -85,7 +86,6 @@ public class PersonInterpreter : BaseInterpreter
                 else if (CheckMultiply(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Mutiple;
-                    results.OperationType = Results.Operations.Plus;
                     results.OpponentUsed = opponent;
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
@@ -93,7 +93,6 @@ public class PersonInterpreter : BaseInterpreter
                 else if (CheckDivide(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Division;
-                    results.OperationType = Results.Operations.Plus;
                     results.OpponentUsed = opponent;
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
@@ -102,21 +101,15 @@ public class PersonInterpreter : BaseInterpreter
         }
 
         if (results.OperationType == Results.Operations.NotSet)
+        {
             results.ErrorType = Results.Errors.InvalidCalculation;
-        
+            results.ValidMove = false;
+            return results;
+        }
+
+        if (IsWinner(actionPlayer))
+            results.Victory = true;
+
         return results;
     }
-    
-    public static bool UpdateHand(Hand actionPlayerHand, int checkValue, int handGoal)
-    {
-        if (checkValue == handGoal)
-        {
-            actionPlayerHand.Value = handGoal;
-            return true;
-        }
-        return false;
-    }
-
-
-
 }
