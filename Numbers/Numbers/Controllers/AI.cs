@@ -175,21 +175,50 @@ namespace Numbers.Controllers
 
         public static Results Random(Player currentPlayer, List<Player> otherPlayers)
         {
-            Random randomPlayer = new Random();
-            int randPlayer = randomPlayer.Next(0, otherPlayers.Count - 1);
-            Random randomHand = new Random();
-            int randHand = randomHand.Next(0, currentPlayer.Hands.Count - 1);
-            int randHandComputer = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+            Random randomPlayer;
+            int randPlayer;
+            Random randomHand;
+            int randHand;
+            int randHandComputer;
+            Player pickedPlayer;
+            Hand pickedHand;
+            Hand computerHand;
+            Array ops;
+            Random randomOp;
+            Results.Operations op;
 
-            Player pickedPlayer = otherPlayers[randPlayer];
-            Hand pickedHand = pickedPlayer.Hands[randHand];
-            Hand computerHand = currentPlayer.Hands[randHandComputer];
+            randomPlayer = new Random();
+            randPlayer = randomPlayer.Next(0, otherPlayers.Count - 1);
+            randomHand = new Random();
+            randHand = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+            randHandComputer = randomHand.Next(0, currentPlayer.Hands.Count - 1);
 
-            Array ops = Enum.GetValues(typeof(Results.Operations));
-            Random randomOp = new Random();
-            Results.Operations op = (Results.Operations)ops.GetValue(randomOp.Next(0, 3));
+            pickedPlayer = otherPlayers[randPlayer];
+            pickedHand = pickedPlayer.Hands[randHand];
+            computerHand = currentPlayer.Hands[randHandComputer];
 
-            //while ()
+            ops = Enum.GetValues(typeof(Results.Operations));
+            randomOp = new Random();
+            op = (Results.Operations)ops.GetValue(randomOp.Next(0, 3));
+
+            int result = 0;
+            while (!ComputerInterpreter.ValidateMove(computerHand, pickedHand, op, out result))
+            {
+                randomPlayer = new Random();
+                randPlayer = randomPlayer.Next(0, otherPlayers.Count - 1);
+                randomHand = new Random();
+                randHand = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+                randHandComputer = randomHand.Next(0, currentPlayer.Hands.Count - 1);
+
+                pickedPlayer = otherPlayers[randPlayer];
+                pickedHand = pickedPlayer.Hands[randHand];
+                computerHand = currentPlayer.Hands[randHandComputer];
+
+                ops = Enum.GetValues(typeof(Results.Operations));
+                randomOp = new Random();
+                op = (Results.Operations)ops.GetValue(randomOp.Next(0, 3));
+            }
+
             Results r = new Results();
             r.OpponentUsed = pickedPlayer;
             r.HandUsed = pickedHand;
