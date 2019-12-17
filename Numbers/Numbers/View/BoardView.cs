@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public static class BoardView
 {
-	public static string FormatInputRequest(Player player) => $"Player {player.Name}: ";
+	public static string FormatInputRequest(Player player) => $"{player.Name}: ";
 
     public static string FormatPlayer(List<Player> players)
     {
@@ -19,9 +19,10 @@ public static class BoardView
         msg += "****************************************\n";
         foreach (Player p in players)
         {
+            int handNum = p.Hands.Count;
             if (counter%2 == 1)
             {
-                msgName1 += p.Name + "      ";
+                msgName1 += p.Name + "       ";
                 foreach (Hand h in p.Hands)
                 {
                     msgTag1 += h.Tag + "|";
@@ -29,13 +30,18 @@ public static class BoardView
                 }
                 msgTag1 = msgTag1.Substring(0, msgTag1.Length - 1);
                 msgNum1 = msgNum1.Substring(0, msgNum1.Length - 1);
-                msgTag1 += "    ";
-                msgNum1 += "    ";
+
+                msgTag1 += "       ";
+                msgNum1 += "       ";
+                //msgTag1 += "       ";
+                //msgNum1 += "       ";
+                msgTag1 = msgTag1.Substring(0, msgTag1.Length - 4);
+                msgNum1 = msgNum1.Substring(0, msgNum1.Length - 4);
             }
 
             else
             {
-                msgName2 += p.Name + "      ";
+                msgName2 += p.Name + "       ";
                 foreach (Hand h in p.Hands)
                 {
                     msgTag2 += h.Tag + "|";
@@ -43,8 +49,13 @@ public static class BoardView
                 }
                 msgTag2 = msgTag2.Substring(0, msgTag2.Length - 1);
                 msgNum2 = msgNum2.Substring(0, msgNum2.Length - 1);
-                msgTag2 += "    ";
-                msgNum2 += "    ";
+
+                msgTag2 += "       ";
+                msgNum2 += "       ";
+                //msgTag2 += "       ";
+                //msgNum2 += "       ";
+                msgTag2 = msgTag2.Substring(0, msgTag2.Length - 4);
+                msgNum2 = msgNum2.Substring(0, msgNum2.Length - 4);
             }
             counter++;
             
