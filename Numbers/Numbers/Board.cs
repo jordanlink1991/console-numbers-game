@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Numbers.Controllers;
 
 namespace Numbers
 {
@@ -20,7 +21,7 @@ namespace Numbers
 			//BoardView.FormatWelcome();			
 
 			// Initialize players
-			List<Player> players = InitializePlayers(2, 0, 2);
+			List<Player> players = InitializePlayers(1, 1, 2);
 
 			// Pop the first player
 			Player currentPlayer = players[0];
@@ -33,28 +34,36 @@ namespace Numbers
 				// Print state of Board
 				Console.WriteLine(BoardView.FormatPlayer(players));
 
-				// Read input
-				Console.Write(BoardView.FormatInputRequest(currentPlayer));
-				string input = Console.ReadLine();
+				Results result;
+				if (currentPlayer.IsHuman)
+				{
+					// Read input
+					Console.Write(BoardView.FormatInputRequest(currentPlayer));
+					string input = Console.ReadLine();
 
-				Results result = PersonInterpreter.ValidateMove(currentPlayer, otherPlayers, input);
-				if (result.Help)
-				{
-					Console.WriteLine(BoardView.FormatHelp());
-					continue;
+					result = PersonInterpreter.ValidateMove(currentPlayer, otherPlayers, input);
+					if (result.Help)
+					{
+						Console.WriteLine(BoardView.FormatHelp());
+						continue;
+					}
+					else if (!result.ValidMove)
+					{
+						Console.WriteLine(BoardView.FormatError(result.ErrorType));
+						continue;
+					}
+					else if (result.Victory)
+					{
+						// Print state of Board
+						Console.WriteLine(BoardView.FormatPlayer(players));
+						Console.WriteLine(BoardView.FormatVictory(currentPlayer));
+						break;
+					}
 				}
-				else if (!result.ValidMove)
+				else
 				{
-					Console.WriteLine(BoardView.FormatError(result.ErrorType));
-					continue;
+					result = AI.BruteForce(currentPlayer, otherPlayers);
 				}
-                else if (result.Victory)
-                {
-                    // Print state of Board
-                    Console.WriteLine(BoardView.FormatPlayer(players));
-                    Console.WriteLine(BoardView.FormatVictory(currentPlayer));
-                    break;
-                }
 
                 Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
 
