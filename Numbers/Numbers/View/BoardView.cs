@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public static class BoardView
 {
+	public static string FormatInputRequest(Player player) => $"Player {player.Name}: ";
+
     public static string FormatPlayer(List<Player> players)
     {
         string msg = "";
