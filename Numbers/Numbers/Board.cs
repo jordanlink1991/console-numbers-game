@@ -27,7 +27,7 @@ namespace Numbers
 			List<Player> otherPlayers = new List<Player>(players);
 			otherPlayers.RemoveAt(0);
 
-			// Run forever!
+			// Run game
 			while (true)
 			{
 				// Print state of Board
@@ -37,32 +37,28 @@ namespace Numbers
 				Console.Write(BoardView.FormatInputRequest(currentPlayer));
 				string input = Console.ReadLine();
 
+				if (new List<string>() { "q", "quit", "exit", "stop", "end" }.Contains(input.ToLower()))
+					break;
+
+				// Validate and execute move
 				Results result = Interpreter.ValidateMove(currentPlayer, otherPlayers, input);
 				if (result.Help)
 				{
 					Console.WriteLine(BoardView.FormatHelp());
+					continue;
 				}
-				else if(!result.ValidMove)
+				else if (!result.ValidMove)
 				{
 					Console.WriteLine(BoardView.FormatError(result.ErrorType));
+					continue;
 				}
+				//else if (result.Victory)
+				//{
+				//	Console.WriteLine(BoardView.FormatVictory(currentPlayer));
+				//	break;
+				//}
 
-				// var result = Interpretor.Interpret(currentPlayer, otherPlayers, input);
-				// if(result.IsHelp)
-				//     BoardView.FormatHelp();
-				// else if(result.IsInvalid)
-				//		BoardView.FormatError(result.ErrorCode);
-				//
-				// BoardView.FormatAction(currentPlayer, result.ActionPlayer, result.Operation, result.EndResult);
-				// 
-				// if (result.IsVictory) 
-				// {
-				//     BoardView.FormatVictory(currentPlayer);
-				//     break;
-				// }
-
-				if (input == "e")
-					break;
+				Console.WriteLine(BoardView.FormatAction(currentPlayer, null, result.OperationType, null, null));
 
 				// Push and pop players
 				otherPlayers.Add(currentPlayer);
@@ -82,7 +78,7 @@ namespace Numbers
 		/// <param name="handsPerPlayer"></param>
 		/// <param name="currentPlayer"></param>
 		/// <param name="otherPlayers"></param>
-		public static List<Player> InitializePlayers(int humanPlayers, int computerPlayers, int handsPerPlayer)
+		private static List<Player> InitializePlayers(int humanPlayers, int computerPlayers, int handsPerPlayer)
 		{
 			List<Player> players = new List<Player>();
 
@@ -91,7 +87,7 @@ namespace Numbers
 			
 			List<Hand> hands = new List<Hand>();
 			for (int i = 0; i < handsPerPlayer; i++)
-				hands.Insert(0, new Hand(tag[i].ToString(), 1));
+				hands.Add(new Hand(tag[i].ToString(), 1));
 
 			// Add humans
 			for (int i = 0; i < humanPlayers; i++)
