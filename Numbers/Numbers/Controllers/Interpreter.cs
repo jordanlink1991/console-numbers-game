@@ -20,8 +20,7 @@ public class Interpreter
     {
         Results results = new Results();
         Hand actionPlayerHand = null;
-        int handGoal;
-        
+
         //First Check to see if the player needs help
         if (move.ToLower().Equals("help"))
         {
@@ -51,7 +50,7 @@ public class Interpreter
         }
 
         //Check to see if number is a valid number and if its inside the bounds of 0 and 10
-        if (!int.TryParse(splitMove[1].ToString(), out handGoal) || handGoal >= 10 || handGoal < 0)
+        if (!int.TryParse(splitMove[1].ToString(), out int handGoal) || handGoal >= 10 || handGoal < 0)
         {
             results.ErrorType = Results.Errors.InvalidNumber;
             return results;
@@ -68,13 +67,13 @@ public class Interpreter
                 if (results.OperationType != Results.Operations.NotSet)
                     break;
 
-                if (CheckAdd(actionPlayerHand, hand))
+                if (CheckAdd(actionPlayerHand, hand, handGoal))
                     results.OperationType = Results.Operations.Plus;
-                else if (CheckSubtract(actionPlayerHand, hand))
+                else if (CheckSubtract(actionPlayerHand, hand, handGoal))
                     results.OperationType = Results.Operations.Minus;
-                else if (CheckMultiply(actionPlayerHand, hand))
+                else if (CheckMultiply(actionPlayerHand, hand, handGoal))
                     results.OperationType = Results.Operations.Mutiple;
-                else if (CheckDivide(actionPlayerHand, hand))
+                else if (CheckDivide(actionPlayerHand, hand, handGoal))
                     results.OperationType = Results.Operations.Division;
             }
         }
@@ -85,23 +84,74 @@ public class Interpreter
         return results;
     }
 
-    public static bool CheckAdd(Hand actionPlayerHand, Hand opponentHand)
+
+    #region Hand Calculations
+    /// <summary>
+    /// Adds the Player and Opponent Hands, gets the Value Modulo 10 and compares with the Hand goal
+    /// </summary>
+    /// <param name="actionPlayerHand"></param>
+    /// <param name="opponentHand"></param>
+    /// <param name="handGoal">Value of the actionPlayerHand that is trying to be achieved</param>
+    /// <returns></returns>
+    public static bool CheckAdd(Hand actionPlayerHand, Hand opponentHand, int handGoal)
     {
-        return true;
+        int checkValue = (actionPlayerHand.Value + opponentHand.Value) % 10;
+        return UpdateHand(actionPlayerHand, checkValue, handGoal);
     }
 
-    public static bool CheckSubtract(Hand actionPlayerHand, Hand opponentHand)
+    /// <summary>
+    /// Subtracts the Player and Opponent Hands, gets the absolute value Modulo 10 and compares with the Hand goal
+    /// </summary>
+    /// <param name="actionPlayerHand"></param>
+    /// <param name="opponentHand"></param>
+    /// <param name="handGoal">Value of the actionPlayerHand that is trying to be achieved</param>
+    /// <returns></returns>
+    public static bool CheckSubtract(Hand actionPlayerHand, Hand opponentHand, int handGoal)
     {
-        return true;
+        int checkValue = Math.Abs(actionPlayerHand.Value - opponentHand.Value) % 10;
+        return UpdateHand(actionPlayerHand, checkValue, handGoal);
     }
 
-    public static bool CheckMultiply(Hand actionPlayerHand, Hand opponentHand)
+    /// <summary>
+    /// Multiplies the Player and Opponent Hands, gets the Modulo 10 value and compares with the Hand goal
+    /// </summary>
+    /// <param name="actionPlayerHand"></param>
+    /// <param name="opponentHand"></param>
+    /// <param name="handGoal">Value of the actionPlayerHand that is trying to be achieved</param>
+    /// <returns></returns>
+    public static bool CheckMultiply(Hand actionPlayerHand, Hand opponentHand, int handGoal)
     {
-        return true;
+        int checkValue = (actionPlayerHand.Value * opponentHand.Value) % 10;
+        return UpdateHand(actionPlayerHand, checkValue, handGoal);
     }
-    public static bool CheckDivide(Hand actionPlayerHand, Hand opponentHand)
+
+    /// <summary>
+    /// Divides the Player and Opponent Hands, gets the Modulo 10 value and compares with the Hand goal
+    /// </summary>
+    /// <param name="actionPlayerHand"></param>
+    /// <param name="opponentHand"></param>
+    /// <param name="handGoal">Value of the actionPlayerHand that is trying to be achieved</param>
+    /// <returns></returns>
+    public static bool CheckDivide(Hand actionPlayerHand, Hand opponentHand, int handGoal)
     {
-        return true;
+        if (actionPlayerHand.Value % opponentHand.Value != 0)
+            return false;
+
+        int checkValue = (actionPlayerHand.Value / opponentHand.Value) % 10;
+        return UpdateHand(actionPlayerHand, checkValue, handGoal);
     }
-    
+
+
+    public static bool UpdateHand(Hand actionPlayerHand, int checkValue, int handGoal)
+    {
+        if (checkValue == handGoal)
+        {
+            actionPlayerHand.Value = handGoal;
+            return true;
+        }
+        return false;
+    }
+    #endregion Hand Calculations
+
+
 }
