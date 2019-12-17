@@ -111,11 +111,13 @@ public static class BoardView
     {
 
         string manual = "********************\n";
-        manual += "Welcome to Numbers:\n";
-        manual += "The purpose of the game is to \n";
-        manual += "Rule #1: Can only do operations against other players' hands\n";
-        manual += "Rule #2: Operations allowed: Plus, Minus, Mulplication, Division\n";
-        manual += "Rule #3: If result after operation is a two digits number, only take the last digit (0-9)\n";
+        manual += "Welcome to Numbers\n";
+        manual += "Goal: Try to get 8s on all of your hands.\n";
+        manual += "How: Use your opponents hand values to change your hands. All basic operations (Addition, Subtraction, Multiplication and Division) are available.\n";
+        manual += "Input: Specify the Hand Tag you want to change and the value. ex. A2 => Change my A hand to 2\n";
+        manual += "The Application will let you know if your input is valid, but keep in mind that other players can use your hand to win.\n";
+        manual += "Press any key to begin.\n";
+        manual += "Have Fun!!!!\n";
         manual += "********************\n";
         return manual;
     }

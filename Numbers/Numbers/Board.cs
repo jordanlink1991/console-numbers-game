@@ -17,10 +17,12 @@ namespace Numbers
 			// if(result.IsInvalid)
 			//		return;
 
-			//BoardView.FormatWelcome();			
+			Console.WriteLine(BoardView.FormatWelcome());
+            Console.ReadLine();
+            Console.Clear();
 
-			// Initialize players
-			List<Player> players = InitializePlayers(2, 0, 2);
+            // Initialize players
+            List<Player> players = InitializePlayers(6, 0, 6);
 
 			// Pop the first player
 			Player currentPlayer = players[0];
@@ -56,13 +58,14 @@ namespace Numbers
                     break;
                 }
 
+                Console.Clear();
                 Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
 
                 // Push and pop players
                 otherPlayers.Add(currentPlayer);
 				currentPlayer = otherPlayers[0];
 				otherPlayers.RemoveAt(0);
-			}
+            }
 
 			// Wait for exit
 			Console.ReadKey();
