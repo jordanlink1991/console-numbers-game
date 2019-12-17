@@ -28,9 +28,9 @@ public class BaseInterpreter
     /// <param name="opponentHand"></param>
     /// <param name="handGoal">Value of the actionPlayerHand that is trying to be achieved</param>
     /// <returns></returns>
-    public static bool CheckSubtract(Hand actionPlayerHand, Hand opponentHand, int handGoal)
+    public static bool CheckSubtract(Hand actionPlayerHand, Hand opponentHand, out int checkValue)
     {
-        int checkValue = Math.Abs(actionPlayerHand.Value - opponentHand.Value) % 10;
+        checkValue = Math.Abs(actionPlayerHand.Value - opponentHand.Value) % 10;
         return true;
         //return UpdateHand(actionPlayerHand, checkValue, handGoal, results);
     }
@@ -42,9 +42,9 @@ public class BaseInterpreter
     /// <param name="opponentHand"></param>
     /// <param name="handGoal">Value of the actionPlayerHand that is trying to be achieved</param>
     /// <returns></returns>
-    public static bool CheckMultiply(Hand actionPlayerHand, Hand opponentHand, int handGoal)
+    public static bool CheckMultiply(Hand actionPlayerHand, Hand opponentHand, out int checkValue)
     {
-        int checkValue = (actionPlayerHand.Value * opponentHand.Value) % 10;
+        checkValue = (actionPlayerHand.Value * opponentHand.Value) % 10;
         return true;
     }
 
@@ -55,12 +55,13 @@ public class BaseInterpreter
     /// <param name="opponentHand"></param>
     /// <param name="handGoal">Value of the actionPlayerHand that is trying to be achieved</param>
     /// <returns></returns>
-    public static bool CheckDivide(Hand actionPlayerHand, Hand opponentHand, int handGoal)
+    public static bool CheckDivide(Hand actionPlayerHand, Hand opponentHand, out int checkValue)
     {
+        checkValue = 0;
         if (actionPlayerHand.Value % opponentHand.Value != 0)
             return false;
 
-        int checkValue = (actionPlayerHand.Value / opponentHand.Value) % 10;
+        checkValue = (actionPlayerHand.Value / opponentHand.Value) % 10;
         return true;
     }
 

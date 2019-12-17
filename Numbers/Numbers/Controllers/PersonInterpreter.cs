@@ -74,7 +74,7 @@ public class PersonInterpreter : BaseInterpreter
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
                 }
-                else if (CheckSubtract(actionPlayerHand, oppoHand, handGoal) && UpdateHand(actionPlayerHand, checkValue, handGoal))
+                else if (CheckSubtract(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Minus;
                     results.OperationType = Results.Operations.Plus;
@@ -82,7 +82,7 @@ public class PersonInterpreter : BaseInterpreter
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
                 }
-                else if (CheckMultiply(actionPlayerHand, oppoHand, handGoal) && UpdateHand(actionPlayerHand, checkValue, handGoal))
+                else if (CheckMultiply(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Mutiple;
                     results.OperationType = Results.Operations.Plus;
@@ -90,7 +90,7 @@ public class PersonInterpreter : BaseInterpreter
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
                 }
-                else if (CheckDivide(actionPlayerHand, oppoHand, handGoal) && UpdateHand(actionPlayerHand, checkValue, handGoal))
+                else if (CheckDivide(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Division;
                     results.OperationType = Results.Operations.Plus;
