@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class BoardView
+public static class BoardView
 {
 	public static string FormatInputRequest(Player player) => $"Player {player.Name}: ";
 
-    public string FormatPlayer(List<Player> players)
+    public static string FormatPlayer(List<Player> players)
     {
         string msg = "";
         foreach (Player p in players)
@@ -22,25 +22,42 @@ public class BoardView
         }
         return msg;
     }
-
-	public string FormatError(int errorCode)
+	public static string FormatError(int errorCode)
 	{
-        if (errorCode == 1)
-            return "Invalid Input Length";
+        if (errorCode == 0)
+            return "Invalid Input Length\n";
+        else if (errorCode == 1)
+            return "Invalid Hand\n";
         else if (errorCode == 2)
-            return "Invalid Hand";
+            return "Invalid Number\n";
         else if (errorCode == 3)
-            return "Invalid Calculation";
+            return "Invalid Calculation\n";
 
         return ""; 
 	}
 
-    public string FormatVictory(Player player)
+    public static string FormatVictory(Player player)
     {
-        return "Player " + player.Name + " Wins!!!";
+        return "Player " + player.Name + " Wins!!!\n";
     }
 
-    public string FormatHelp()
+    public static string FormatAction(Player currentPlayer, Player opponentPlayer, Results.Operations operation, Hand currentHand, Hand opponentHand){
+        switch (operation){
+            case Results.Operations.Plus:
+                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " PLUS " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+            case Results.Operations.Minus:
+                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MINUS " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+            case Results.Operations.Mutiple:
+                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MULTIPLES " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+            case Results.Operations.Division:
+                return "Player " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " DIVIDES " + "Player " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+            default:
+                return "";
+        }
+    }   
+
+
+    public static string FormatHelp()
     {
         return "User Manual:xxxxxx";
     }
