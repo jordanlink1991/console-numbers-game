@@ -64,7 +64,7 @@ namespace Numbers
 				}
 				else
 				{
-					result = AI.BruteForce(currentPlayer, otherPlayers);
+					result = AI.Random(currentPlayer, otherPlayers);
 				}
 
                 Console.Clear();

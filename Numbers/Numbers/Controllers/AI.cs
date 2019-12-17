@@ -238,6 +238,8 @@ namespace Numbers.Controllers
             r.OpponentUsed = pickedPlayer;
             r.HandUsed = pickedHand;
             r.HandChanged = computerHand;
+            r.OperationType = op;
+            computerHand.Value = result;
             return r;
         }
     }
