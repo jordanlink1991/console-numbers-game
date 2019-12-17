@@ -37,7 +37,7 @@ namespace Numbers
 				Console.Write(BoardView.FormatInputRequest(currentPlayer));
 				string input = Console.ReadLine();
 
-				Results result = Interpreter.ValidateMove(currentPlayer, otherPlayers, input);
+				Results result = PersonInterpreter.ValidateMove(currentPlayer, otherPlayers, input);
 				if (result.Help)
 				{
 					Console.WriteLine(BoardView.FormatHelp());
