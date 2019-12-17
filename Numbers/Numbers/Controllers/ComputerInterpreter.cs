@@ -2,11 +2,7 @@
 
 public class ComputerInterpreter : BaseInterpreter
 {
-	public ComputerInterpreter()
-	{
-	}
-
-    public bool ValidateMove(Hand computerHand, Hand opponentHand, Results.Operations operations, out int result)
+    public static bool ValidateMove(Hand computerHand, Hand opponentHand, Results.Operations operations, out int result)
     {
         result = 0;
         switch (operations)
