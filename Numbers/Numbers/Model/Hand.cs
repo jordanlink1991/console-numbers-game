@@ -23,4 +23,8 @@ public class Hand
 		Tag = tag ?? string.Empty;
 		Value =  value;
 	}
+
+	public Hand(Hand h)
+		: this(h.Tag, h.Value)
+	{ }
 }

@@ -37,4 +37,12 @@ public class Player
 	{
 		IsHuman = isHuman;
 	}
+
+	public Player(Player p)
+		: this()
+	{
+		Name = p.Name;
+		p.Hands.ForEach(x => Hands.Add(new Hand(x)));
+		IsHuman = p.IsHuman;
+	}
 }
