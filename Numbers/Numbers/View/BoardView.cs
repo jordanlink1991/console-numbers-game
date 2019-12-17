@@ -8,30 +8,30 @@ public static class BoardView
         string msg = "";
         foreach (Player p in players)
         {
-            msg += "******************\n";
+            msg += "********************\n";
             msg += "Player: " + p.Name + "\n";
-            int handIndex = 1;
             foreach (Hand h in p.Hands)
-            {
-                msg += "Hand: " + handIndex.ToString() + "|" + h.Value.ToString() + "\n";
-                handIndex++;
-            }
-            msg += "******************\n";
+                msg += "Hand: " + h.Tag + "|" + h.Value.ToString() + "\n";
+
+            msg += "********************\n";
         }
         return msg;
     }
-	public static string FormatError(int errorCode)
+	public static string FormatError(Results.Errors errorCode)
 	{
-        if (errorCode == 0)
-            return "Invalid Input Length\n";
-        else if (errorCode == 1)
-            return "Invalid Hand\n";
-        else if (errorCode == 2)
-            return "Invalid Number\n";
-        else if (errorCode == 3)
-            return "Invalid Calculation\n";
-
-        return ""; 
+        switch (errorCode)
+        {
+            case Results.Errors.InvalidMoveLength:
+                return "Invalid Input Length - Please use one letter plus one digit\n";
+            case Results.Errors.InvalidHand:
+                return "Invalid Hand - Please use your proper hand tag\n";
+            case Results.Errors.InvalidNumber:
+                return "Invalid Number - Please use last digit only if your end result is a two digits number\n";
+            case Results.Errors.InvalidCalculation:
+                return "Invalid Calculation - Please check your calculation\n";
+            default:
+                return "";
+        }
 	}
 
     public static string FormatVictory(Player player)
@@ -57,6 +57,13 @@ public static class BoardView
 
     public static string FormatHelp()
     {
-        return "User Manual:xxxxxx";
+        string manual = "********************\n";
+        manual += "User Manual:\n";
+        manual += "End Goal: Achive 8 on all hands\n";
+        manual += "Rule #1: Can only do operations against other players' hands\n";
+        manual += "Rule #2: Operations allowed: Plus, Minus, Mulplication, Division\n";
+        manual += "Rule #3: If result after operation is a two digits number, only take the last digit (0-9)\n";
+        manual += "********************\n";
+        return manual;
     }
 }
