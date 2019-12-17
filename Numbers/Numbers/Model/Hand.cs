@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 
+[DebuggerDisplay("Tag: {Tag}, Value: {Value}")]
 public class Hand
 {
 	/// <summary>
