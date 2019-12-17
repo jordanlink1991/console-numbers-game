@@ -20,7 +20,7 @@ namespace Numbers
 			//BoardView.FormatWelcome();			
 
 			// Initialize players
-			List<Player> players = InitializePlayers(3, 0, 3);
+			List<Player> players = InitializePlayers(2, 0, 2);
 
 			// Pop the first player
 			Player currentPlayer = players[0];
@@ -50,6 +50,8 @@ namespace Numbers
 				}
                 else if (result.Victory)
                 {
+                    // Print state of Board
+                    Console.WriteLine(BoardView.FormatPlayer(players));
                     Console.WriteLine(BoardView.FormatVictory(currentPlayer));
                     break;
                 }

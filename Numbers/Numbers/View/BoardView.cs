@@ -107,6 +107,19 @@ public static class BoardView
         }
     }   
 
+    public static string FormatWelcome()
+    {
+
+        string manual = "********************\n";
+        manual += "Welcome to Numbers:\n";
+        manual += "The purpose of the game is to \n";
+        manual += "Rule #1: Can only do operations against other players' hands\n";
+        manual += "Rule #2: Operations allowed: Plus, Minus, Mulplication, Division\n";
+        manual += "Rule #3: If result after operation is a two digits number, only take the last digit (0-9)\n";
+        manual += "********************\n";
+        return manual;
+    }
+
 
     public static string FormatHelp()
     {
