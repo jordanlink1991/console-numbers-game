@@ -37,11 +37,7 @@ namespace Numbers
 				Console.Write(BoardView.FormatInputRequest(currentPlayer));
 				string input = Console.ReadLine();
 
-				if (new List<string>() { "q", "quit", "exit", "stop", "end" }.Contains(input.ToLower()))
-					break;
-
-				// Validate and execute move
-				Results result = Interpreter.ValidateMove(currentPlayer, otherPlayers, input);
+				Results result = PersonInterpreter.ValidateMove(currentPlayer, otherPlayers, input);
 				if (result.Help)
 				{
 					Console.WriteLine(BoardView.FormatHelp());
