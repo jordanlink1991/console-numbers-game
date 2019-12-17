@@ -54,21 +54,22 @@ namespace Numbers
 						Console.WriteLine(BoardView.FormatError(result.ErrorType));
 						continue;
 					}
-					else if (result.Victory)
-					{
-						// Print state of Board
-						Console.WriteLine(BoardView.FormatPlayer(players));
-						Console.WriteLine(BoardView.FormatVictory(currentPlayer));
-						break;
-					}
 				}
 				else
 				{
 					result = AI.BruteForce(currentPlayer, otherPlayers);
 				}
 
-                Console.Clear();
-                Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
+				Console.Clear();
+				Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
+
+				if (BaseInterpreter.IsWinner(currentPlayer))
+				{
+					// Print state of Board
+					Console.WriteLine(BoardView.FormatPlayer(players));
+					Console.WriteLine(BoardView.FormatVictory(currentPlayer));
+					break;
+				}
 
                 // Push and pop players
                 otherPlayers.Add(currentPlayer);
