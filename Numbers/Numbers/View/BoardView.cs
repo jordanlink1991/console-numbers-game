@@ -25,10 +25,10 @@ public static class BoardView
                 foreach (Hand h in p.Hands)
                 {
                     msgTag1 += h.Tag + "|";
-                    msgNum1 += h.Value + "|";
+                    msgNum1 += h.Value.ToString() + "|";
                 }
                 msgTag1 = msgTag1.Substring(0, msgTag1.Length - 1);
-                msgNum1 = msgNum1.Substring(0, msgTag1.Length - 1);
+                msgNum1 = msgNum1.Substring(0, msgNum1.Length - 1);
                 msgTag1 += "    ";
                 msgNum1 += "    ";
             }
@@ -39,10 +39,10 @@ public static class BoardView
                 foreach (Hand h in p.Hands)
                 {
                     msgTag2 += h.Tag + "|";
-                    msgNum2 += h.Value + "|";
+                    msgNum2 += h.Value.ToString() + "|";
                 }
-                msgTag2 = msgTag1.Substring(0, msgTag1.Length - 1);
-                msgNum2 = msgNum1.Substring(0, msgTag1.Length - 1);
+                msgTag2 = msgTag2.Substring(0, msgTag2.Length - 1);
+                msgNum2 = msgNum2.Substring(0, msgNum2.Length - 1);
                 msgTag2 += "    ";
                 msgNum2 += "    ";
             }
