@@ -13,15 +13,28 @@ public class Player
 	/// </summary>
 	public List<Hand> Hands { get; set; }
 
+	/// <summary>
+	/// Flag for human players
+	/// </summary>
+	public bool IsHuman { get; set;  }
+
 	public Player()
 	{
+		Name = "Player - Master";
 		Hands = new List<Hand>();
-        Name = "Player - Master";
+		IsHuman = true;
 	}
 
 	public Player(string name, List<Hand> hands)
 	{
 		Name = name ?? string.Empty;
 		Hands = hands ?? new List<Hand>();
+		IsHuman = true;
+	}
+
+	public Player(string name, List<Hand> hands, bool isHuman)
+		: this(name, hands)
+	{
+		IsHuman = isHuman;
 	}
 }
