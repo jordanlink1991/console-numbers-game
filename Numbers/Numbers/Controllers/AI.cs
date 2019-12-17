@@ -7,7 +7,7 @@ namespace Numbers.Controllers
 {
 	public class AI
 	{
-		public static void BruteForce(Player currentPlayer, List<Player> otherPlayers)
+		public static Results BruteForce(Player currentPlayer, List<Player> otherPlayers)
 		{
 			List<Tuple<Results, int, int>> bruteResults = new List<Tuple<Results, int, int>>();
 
@@ -39,7 +39,14 @@ namespace Numbers.Controllers
 							if (ComputerInterpreter.ValidateMove(tempHand, otherHand, op, out checkValue))
 							{
 								tempHand.Value = checkValue;
-								if (run(tempPlayer, otherPlayers, steps, false))
+
+								bool addResult = false;
+								if (ComputerInterpreter.IsWinner(tempPlayer)) // Check for victory
+									addResult = true;
+								else if (RunBruteForce(tempPlayer, otherPlayers, ref steps, false)) // Check next steps
+									addResult = true;
+
+								if(addResult)
 								{
 									Results results = new Results();
 									results.HandChanged = currentPlayer.Hands[j];
@@ -62,7 +69,12 @@ namespace Numbers.Controllers
 
 			// Update hand!
 			if (bestResult != null)
+			{
 				bestResult.Item1.HandChanged.Value = bestResult.Item2;
+				return bestResult.Item1;
+			}
+
+			return null;
 		}
 		
 		public static void Aggressive()
@@ -75,7 +87,7 @@ namespace Numbers.Controllers
 
 		}
 
-		private static bool run(Player currentPlayer, List<Player> otherPlayers, int steps, bool isCurrentPlayerTurn)
+		private static bool RunBruteForce(Player currentPlayer, List<Player> otherPlayers, ref int steps, bool isCurrentPlayerTurn)
 		{
 			if (ComputerInterpreter.IsWinner(currentPlayer))
 				return true;
@@ -84,9 +96,10 @@ namespace Numbers.Controllers
 				if (ComputerInterpreter.IsWinner(otherPlayer))
 					return false;
 
-			// Add to steps
-			steps++;
-
+			// Bootstrap
+			if (steps > 10)
+				return true;
+			
 			// Clone player/hands to prevent update
 			Player tempPlayer = new Player(currentPlayer);
 			List<Player> tempOtherPlayers = new List<Player>();
@@ -94,6 +107,9 @@ namespace Numbers.Controllers
 
 			if (isCurrentPlayerTurn)
 			{
+				// Add to steps
+				steps++;
+
 				// Iterate through all opponents
 				for (int i = 0; i < tempOtherPlayers.Count; i++)
 				{
@@ -114,7 +130,7 @@ namespace Numbers.Controllers
 								if (ComputerInterpreter.ValidateMove(tempHand, tempOtherPlayer.Hands[k], op, out result))
 								{
 									tempHand.Value = result;
-									if (run(tempPlayer, tempOtherPlayers, steps, !isCurrentPlayerTurn))
+									if (RunBruteForce(tempPlayer, tempOtherPlayers, ref steps, !isCurrentPlayerTurn))
 										return true;
 								}
 							}
@@ -156,8 +172,8 @@ namespace Numbers.Controllers
 									if (ComputerInterpreter.ValidateMove(tempOtherHand, tempOtherOrCurrentPlayer.Hands[l], op, out result))
 									{
 										tempOtherHand.Value = result;
-										if (!run(tempPlayer, tempOtherPlayers, steps, !isCurrentPlayerTurn))
-											return false;
+										if (RunBruteForce(tempPlayer, tempOtherPlayers, ref steps, !isCurrentPlayerTurn))
+											return true;
 									}
 								}
 							}
