@@ -72,7 +72,7 @@ namespace Numbers
                 }
 
                 // Write action
-				Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
+				Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
 
                 // Detect winner
 				if (BaseInterpreter.IsWinner(currentPlayer))

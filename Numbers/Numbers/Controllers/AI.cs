@@ -26,7 +26,8 @@ namespace Numbers.Controllers
                     // Make the update to the hand
                     results.MoveResult.HandChanged = currentPlayer.Hands.Find(x => x.Tag == results.MoveResult.HandChanged.Tag);
                     results.MoveResult.HandUsed = otherPlayers.Find(x => x.Name == results.MoveResult.OpponentUsed.Name).Hands.Find(x => x.Tag == results.MoveResult.HandChanged.Tag);
-                    results.MoveResult.HandChanged.Value = results.NewMoveValue;
+					results.MoveResult.HandChangedOriginalValue = results.MoveResult.HandChanged.Value;
+					results.MoveResult.HandChanged.Value = results.NewMoveValue;
                     return results.MoveResult;
                 }
             }
@@ -260,8 +261,11 @@ namespace Numbers.Controllers
             r.OpponentUsed = pickedPlayer;
             r.HandUsed = pickedHand;
             r.HandChanged = computerHand;
+			r.HandChangedOriginalValue = computerHand.Value;
             r.OperationType = op;
+
             computerHand.Value = result;
+
             return r;
         }
     }

@@ -177,19 +177,30 @@ public static class BoardView
         return player.Name + " Wins!!!\n";
     }
 
-    public static string FormatAction(Player currentPlayer, Player opponentPlayer, Results.Operations operation, Hand currentHand, Hand opponentHand) {
-        switch (operation){
-            case Results.Operations.Plus:
-                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " PLUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
-            case Results.Operations.Minus:
-                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MINUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
-            case Results.Operations.Mutiple:
-                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MULTIPLES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
-            case Results.Operations.Division:
-                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " DIVIDES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
-            default:
-                return "";
-        }
+    public static string FormatAction(Player currentPlayer, Player opponentPlayer, Results.Operations operation, Hand currentHand, Hand opponentHand, int currentHandOriginalValue) {
+		string response = $"> ({currentHand.Tag}{currentHandOriginalValue.ToString()} ";
+		if (operation == Results.Operations.Plus)
+			response += "+ ";
+		else if (operation == Results.Operations.Minus)
+			response += "- ";
+		else if (operation == Results.Operations.Mutiple)
+			response += "* ";
+		else if (operation == Results.Operations.Division)
+			response += "/ ";
+		response += $"{opponentHand.Tag}{opponentHand.Value} = {currentHand.Tag}{currentHand.Value}) - {currentPlayer.Name} ";
+
+		if (operation == Results.Operations.Plus)
+			response += "adds ";
+		else if (operation == Results.Operations.Minus)
+			response += "subtracts ";
+		else if (operation == Results.Operations.Mutiple)
+			response += "multiplies ";
+		else if (operation == Results.Operations.Division)
+			response += "divides ";
+
+		response += $"hand {currentHand.Tag} with {opponentPlayer.Name} hand {opponentHand.Tag} to get {currentHand.Tag}{currentHand.Value.ToString()}\n";
+
+		return response;
     }   
 
     public static string FormatWelcome()
@@ -215,7 +226,8 @@ public static class BoardView
         manual += "Rule #1: Can only do operations against other players' hands\n";
         manual += "Rule #2: Operations allowed: Plus, Minus, Mulplication, Division\n";
         manual += "Rule #3: If result after operation is a two digits number, only take the last digit (0-9)\n";
-        manual += "********************\n";
+		manual += "Rule #4: No calculations that go negative. No fractions\n";
+		manual += "********************\n";
         return manual;
     }
 }
