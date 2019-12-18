@@ -157,19 +157,18 @@ public static class BoardView
 
 	public static string FormatError(Results.Errors errorCode)
 	{
-        switch (errorCode)
-        {
-            case Results.Errors.InvalidMoveLength:
-                return "Invalid Input Length - Please use one letter plus one digit\n";
-            case Results.Errors.InvalidHand:
-                return "Invalid Hand - Please use your proper hand tag\n";
-            case Results.Errors.InvalidNumber:
-                return "Invalid Number - Please use last digit only if your end result is a two digits number\n";
-            case Results.Errors.InvalidCalculation:
-                return "Invalid Calculation - Please check your calculation\n";
-            default:
-                return "";
-        }
+		string response = "------------------------------------------\nERROR - ";
+		if (errorCode == Results.Errors.InvalidMoveLength)
+			response += "Invalid Input Length - Please use one letter plus one digit\n";
+		else if (errorCode == Results.Errors.InvalidHand)
+			response += "Invalid Hand - Please use your proper hand tag\n";
+		else if (errorCode == Results.Errors.InvalidNumber)
+			response += "Invalid Number - Please use last digit only if your end result is a two digits number\n";
+		else if (errorCode == Results.Errors.InvalidCalculation)
+			response += "Invalid Calculation - Please check your calculation\n";
+
+		response += "------------------------------------------";
+		return response;
 	}
 
     public static string FormatVictory(Player player)

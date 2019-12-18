@@ -15,10 +15,7 @@ namespace Numbers
 
 		static void Main(string[] args)
 		{
-			// var result = Interpretor.ValidateGame(args)
-			// if(result.IsInvalid)
-			//		return;
-
+			Console.Clear();
 			Console.WriteLine(BoardView.FormatWelcome());
 
             //Read user config
@@ -81,20 +78,22 @@ namespace Numbers
 
             //Queue for history moves
             Queue q = new Queue();
+
             // Run game
             while (true)
 			{
-                // Print state of Board
-                //Console.WriteLine(BoardView.FormatPlayer(players));
-              
                 Console.WriteLine(BoardView.FormatBoard(players));
+
+				// Print move history
                 if (q.Count > 5)
                     q.Dequeue();
                 foreach (string s in q)
                     Console.Write(s);
 
+				// Print space between history and input request
                 Console.WriteLine();
 
+				// Get player input or make computer move
                 Results result;
 				if (currentPlayer.IsHuman)
 				{
@@ -145,9 +144,6 @@ namespace Numbers
                 //5 history moves
                 q.Enqueue(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
 
-                // Write action
-                //Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
-
                 // Detect winner
                 if (BaseInterpreter.IsWinner(currentPlayer))
 				{
@@ -163,8 +159,11 @@ namespace Numbers
 				otherPlayers.RemoveAt(0);
             }
 
-			// Wait for exit
-			Console.ReadKey();
+			// Request to play again
+			Console.Write("Play again (y)? ");
+			string playAgainInput = Console.ReadLine();
+			if (playAgainInput.ToLower() == "y")
+				Main(args);
 		}
 
 		/// <summary>
