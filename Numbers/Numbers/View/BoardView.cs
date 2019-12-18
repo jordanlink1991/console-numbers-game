@@ -5,71 +5,156 @@ public static class BoardView
 {
 	public static string FormatInputRequest(Player player) => $"{player.Name}: ";
 
-    public static string FormatPlayer(List<Player> players)
-    {
-        string msg = "";
-        string msgName1 = "";
-        string msgName2 = "";
-        string msgTag1 = "";
-        string msgTag2 = "";
-        string msgNum1 = "";
-        string msgNum2 = "";
-        int counter = 1;
+	public static string FormatBoard(List<Player> players)
+	{
+		// Determine top and bottom players
+		List<Player> topPlayers = new List<Player>();
+		List<Player> bottomPlayers = new List<Player>();
+		for (int i = 0; i < players.Count; i++)
+			if (i == 0 || i % 2 == 0)
+				topPlayers.Add(players[i]);
+			else
+				bottomPlayers.Add(players[i]);
 
-        msg += "****************************************\n";
-        foreach (Player p in players)
-        {
-            int handNum = p.Hands.Count;
-            if (counter%2 == 1)
-            {
-                msgName1 += p.Name + "       ";
-                foreach (Hand h in p.Hands)
-                {
-                    msgTag1 += h.Tag + "|";
-                    msgNum1 += h.Value.ToString() + "|";
-                }
-                msgTag1 = msgTag1.Substring(0, msgTag1.Length - 1);
-                msgNum1 = msgNum1.Substring(0, msgNum1.Length - 1);
+		string response = string.Empty;
+		const int lengthPerChunk = 25;
 
-                msgTag1 += "       ";
-                msgNum1 += "       ";
-                //msgTag1 += "       ";
-                //msgNum1 += "       ";
-                msgTag1 = msgTag1.Substring(0, msgTag1.Length - 4);
-                msgNum1 = msgNum1.Substring(0, msgNum1.Length - 4);
-            }
+		response += "\n";
 
-            else
-            {
-                msgName2 += p.Name + "       ";
-                foreach (Hand h in p.Hands)
-                {
-                    msgTag2 += h.Tag + "|";
-                    msgNum2 += h.Value.ToString() + "|";
-                }
-                msgTag2 = msgTag2.Substring(0, msgTag2.Length - 1);
-                msgNum2 = msgNum2.Substring(0, msgNum2.Length - 1);
+		// First line
+		foreach (Player player in topPlayers)
+		{
+			string playerText = string.Empty;
+			string name = player.Name;
+			int fillerLength = lengthPerChunk - name.Length;
+			int startPos = (lengthPerChunk / 2) - (name.Length / 2);
+			playerText += " ";
+			for (int i = 1; i < startPos; i++)
+				playerText += "-";
+			playerText += name;
+			for (int i = playerText.Length; i < lengthPerChunk-1; i++)
+				playerText += "-";
+			response += playerText + " ";
+		}
 
-                msgTag2 += "       ";
-                msgNum2 += "       ";
-                //msgTag2 += "       ";
-                //msgNum2 += "       ";
-                msgTag2 = msgTag2.Substring(0, msgTag2.Length - 4);
-                msgNum2 = msgNum2.Substring(0, msgNum2.Length - 4);
-            }
-            counter++;
-            
-        }
-        msg += msgName1 + "\n";
-        msg += msgTag1 + "\n";
-        msg += msgNum1 + "\n\n";
-        msg += msgNum2 + "\n";
-        msg += msgTag2 + "\n";
-        msg += msgName2 + "\n";
-        msg += "****************************************\n";
+		// Second line
+		response += "\n";
+		foreach (Player player in topPlayers)
+		{
+			string index = string.Empty;
+			for (int i = 0; i < player.Hands.Count; i++) {
+				if (i > 0)
+					index += " ";
+				index += $" {player.Hands[i].Tag} ";
+			}
 
-        return msg;
-    }
+			string indexText = string.Empty;
+			int fillerLength = lengthPerChunk - index.Length;
+			int startPos = (lengthPerChunk / 2) - (index.Length / 2);
+			for (int i = 0; i < startPos; i++)
+				indexText += " ";
+			indexText += index;
+			for (int i = indexText.Length; i < lengthPerChunk; i++)
+				indexText += " ";
+			response += indexText;
+		}
+
+		// Third line
+		response += "\n";
+		foreach (Player player in topPlayers)
+		{
+			string values = string.Empty;
+			for (int i = 0; i < player.Hands.Count; i++)
+			{
+				if (i > 0)
+					values += "|";
+				values += $" {player.Hands[i].Value.ToString()} ";
+			}
+
+			string valueText = string.Empty;
+			int fillerLength = lengthPerChunk - values.Length;
+			int startPos = (lengthPerChunk / 2) - (values.Length / 2);
+			for (int i = 0; i < startPos; i++)
+				valueText += " ";
+			valueText += values;
+			for (int i = valueText.Length; i < lengthPerChunk; i++)
+				valueText += " ";
+			response += valueText;
+		}
+
+		// Filler
+		response += "\n\n";
+
+		// Fourth line
+		response += "\n";
+		foreach (Player player in bottomPlayers)
+		{
+			string values = string.Empty;
+			for (int i = 0; i < player.Hands.Count; i++)
+			{
+				if (i > 0)
+					values += "|";
+				values += $" {player.Hands[i].Value.ToString()} ";
+			}
+
+			string valueText = string.Empty;
+			int fillerLength = lengthPerChunk - values.Length;
+			int startPos = (lengthPerChunk / 2) - (values.Length / 2);
+			for (int i = 0; i < startPos; i++)
+				valueText += " ";
+			valueText += values;
+			for (int i = valueText.Length; i < lengthPerChunk; i++)
+				valueText += " ";
+			response += valueText;
+		}
+
+		// Fifth line
+		response += "\n";
+		foreach (Player player in bottomPlayers)
+		{
+			string index = string.Empty;
+			for (int i = 0; i < player.Hands.Count; i++)
+			{
+				if (i > 0)
+					index += " ";
+				index += $" {player.Hands[i].Tag} ";
+			}
+
+			string indexText = string.Empty;
+			int fillerLength = lengthPerChunk - index.Length;
+			int startPos = (lengthPerChunk / 2) - (index.Length / 2);
+			for (int i = 0; i < startPos; i++)
+				indexText += " ";
+			indexText += index;
+			for (int i = indexText.Length; i < lengthPerChunk; i++)
+				indexText += " ";
+			response += indexText;
+		}
+
+		// Sixth line
+		response += "\n";
+		foreach (Player player in bottomPlayers)
+		{
+			string playerText = string.Empty;
+			string name = player.Name;
+			int fillerLength = lengthPerChunk - name.Length;
+			int startPos = (lengthPerChunk / 2) - (name.Length / 2);
+			playerText += " ";
+			for (int i = 1; i < startPos; i++)
+				playerText += "-";
+			playerText += name;
+			for (int i = playerText.Length; i < lengthPerChunk-1; i++)
+				playerText += "-";
+			response += playerText + " ";
+		}
+
+		response += "\n";
+
+		return response;
+	}
+
+	public static string FormatThinking(Player player) => $"{player.Name} is thinking...";
+
 	public static string FormatError(Results.Errors errorCode)
 	{
         switch (errorCode)
@@ -92,16 +177,16 @@ public static class BoardView
         return player.Name + " Wins!!!\n";
     }
 
-    public static string FormatAction(Player currentPlayer, Player opponentPlayer, Results.Operations operation, Hand currentHand, Hand opponentHand){
+    public static string FormatAction(Player currentPlayer, Player opponentPlayer, Results.Operations operation, Hand currentHand, Hand opponentHand) {
         switch (operation){
             case Results.Operations.Plus:
-                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " PLUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " PLUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             case Results.Operations.Minus:
-                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " MINUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MINUS " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             case Results.Operations.Mutiple:
-                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " MULTIPLES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " MULTIPLES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             case Results.Operations.Division:
-                return currentPlayer.Name + "'s Hand " + currentHand.Tag + " DIVIDES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
+                return "> " + currentPlayer.Name + "'s Hand " + currentHand.Tag + " DIVIDES " + opponentPlayer.Name + "'s Hand " + opponentHand.Tag + "\n";
             default:
                 return "";
         }
@@ -121,8 +206,7 @@ public static class BoardView
         manual += "********************\n";
         return manual;
     }
-
-
+	
     public static string FormatHelp()
     {
         string manual = "********************\n";

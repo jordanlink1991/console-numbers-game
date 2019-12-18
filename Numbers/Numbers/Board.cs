@@ -23,7 +23,7 @@ namespace Numbers
             Console.Clear();
 
 			// Initialize players
-			List<Player> players = InitializePlayers(1, 1, 2);
+			List<Player> players = InitializePlayers(3, 0, 2);
 
 			// Pop the first player
 			Player currentPlayer = players[0];
@@ -34,7 +34,8 @@ namespace Numbers
 			while (true)
 			{
 				// Print state of Board
-				Console.WriteLine(BoardView.FormatPlayer(players));
+				//Console.WriteLine(BoardView.FormatPlayer(players));
+				Console.WriteLine(BoardView.FormatBoard(players));
 
 				Results result;
 				if (currentPlayer.IsHuman)
@@ -60,11 +61,11 @@ namespace Numbers
 				}
 				else
                 {
-                    Console.WriteLine("Thinking...");
+                    Console.WriteLine(BoardView.FormatThinking(currentPlayer));
 
                     // Determine move
                     //result = AI.Random(currentPlayer, otherPlayers);
-                    result = AI.BruteForce(currentPlayer, otherPlayers, 2);
+                    result = AI.BruteForce(currentPlayer, otherPlayers, 1);
 
                     // Clear existing input
                     Console.Clear();
@@ -77,7 +78,7 @@ namespace Numbers
 				if (BaseInterpreter.IsWinner(currentPlayer))
 				{
 					// Print state of Board
-					Console.WriteLine(BoardView.FormatPlayer(players));
+					Console.WriteLine(BoardView.FormatBoard(players));
 					Console.WriteLine(BoardView.FormatVictory(currentPlayer));
 					break;
 				}
