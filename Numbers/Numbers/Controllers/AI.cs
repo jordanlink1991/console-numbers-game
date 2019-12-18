@@ -151,7 +151,7 @@ namespace Numbers.Controllers
                                     tempHand.Value = result;
                                     BruteResult bruteResult;
                                     int newSteps = steps;
-
+									
                                     tasks.Add(Task.Run(() =>
                                     {
                                         if (BruteForce(tempPlayer, otherPlayers, ref newSteps, maxSteps, !isCurrentPlayerTurn, out bruteResult))
