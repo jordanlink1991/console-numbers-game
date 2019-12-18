@@ -1,60 +1,182 @@
-﻿using System;
+﻿using Numbers.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Numbers.Controllers
 {
 	public class AI
 	{
-		public static Results BruteForce(Player currentPlayer, List<Player> otherPlayers)
+        /// <summary>
+        /// Iterate through all possible plays and determine the quickest route to victory
+        /// </summary>
+        /// <param name="currentPlayer"></param>
+        /// <param name="otherPlayers"></param>
+        /// <returns></returns>
+		public static Results BruteForce(Player currentPlayer, List<Player> otherPlayers, int maxSteps)
 		{
-			List<Tuple<Results, int, int>> bruteResults = new List<Tuple<Results, int, int>>();
-
-            // Clone player/hands to prevent update
-            Player tempPlayer = new Player(currentPlayer);
-
-            // Iterate through all opponents
-            for (int i = 0; i < otherPlayers.Count; i++)
+            int steps = 0;
+            BruteResult results;
+            if (BruteForce(currentPlayer, otherPlayers, ref steps, maxSteps, true, out results))
             {
-                Player otherPlayer = otherPlayers[i];
-
-                // Iterate through all current hands
-                for (int j = 0; j < tempPlayer.Hands.Count; j++)
+                if (results != null)
                 {
-                    Hand tempHand = tempPlayer.Hands[j];
+                    // Make the update to the hand
+                    results.MoveResult.HandChanged = currentPlayer.Hands.Find(x => x.Tag == results.MoveResult.HandChanged.Tag);
+                    results.MoveResult.HandUsed = otherPlayers.Find(x => x.Name == results.MoveResult.OpponentUsed.Name).Hands.Find(x => x.Tag == results.MoveResult.HandChanged.Tag);
+                    results.MoveResult.HandChanged.Value = results.NewMoveValue;
+                    return results.MoveResult;
+                }
+            }
 
-                    // Initialize step counter
-                    int steps = 0;
+            // Unable to find path - return random
+            return Random(currentPlayer, otherPlayers);
+        }
 
-                    // Iterate through all other players' hands
-                    for (int k = 0; k < otherPlayer.Hands.Count; k++)
+        /// <summary>
+        /// Recursively play through all possible actions
+        /// </summary>
+        /// <param name="currentPlayer"></param>
+        /// <param name="otherPlayers"></param>
+        /// <param name="steps"></param>
+        /// <param name="isCurrentPlayerTurn"></param>
+        /// <param name="returnResult"></param>
+        /// <returns></returns>
+        private static bool BruteForce(Player currentPlayer, List<Player> otherPlayers, ref int steps, int maxSteps, bool isCurrentPlayerTurn, out BruteResult returnResult)
+        {
+            returnResult = null;
+
+            if (isCurrentPlayerTurn)
+            {
+                foreach (Player otherPlayer in otherPlayers)
+                    if (ComputerInterpreter.IsWinner(otherPlayer))
+                        return false;
+            }
+            else if (ComputerInterpreter.IsWinner(currentPlayer))
+                return true;
+
+            if (steps > maxSteps)
+                return false;
+
+            Object locker = new object();
+            List<BruteResult> bruteResults = new List<BruteResult>();
+            List<Task> tasks = new List<Task>();
+
+            if (!isCurrentPlayerTurn)
+            {
+                for (int i = 0; i < otherPlayers.Count; i++)
+                {
+                    // Create a collection that contains the other players and the current player
+                    List<Player> tempOtherAndCurrentPlayers = new List<Player>();
+                    otherPlayers.ForEach(x => tempOtherAndCurrentPlayers.Add(new Player(x)));
+                    tempOtherAndCurrentPlayers.Add(new Player(currentPlayer)); // add "current" player
+                    tempOtherAndCurrentPlayers.RemoveAt(i); // remove "current other" player
+
+                    foreach (Hand hand in otherPlayers[i].Hands)
                     {
-                        Hand otherHand = otherPlayer.Hands[k];
+                        foreach (Player tempOtherPlayer in tempOtherAndCurrentPlayers)
+                        {
+                            foreach (Hand tempOtherHand in tempOtherPlayer.Hands)
+                            {
+                                foreach (Results.Operations op in Enum.GetValues(typeof(Results.Operations)))
+                                {
+                                    if (op == Results.Operations.NotSet)
+                                        continue;
 
-						// Iterate through all operators
-						foreach (Results.Operations op in Enum.GetValues(typeof(Results.Operations)))
-						{
-							int checkValue = -1;
-							if (ComputerInterpreter.ValidateMove(tempHand, otherHand, op, out checkValue))
-							{
-								tempHand.Value = checkValue;
+                                    // Clone player/hands to prevent update
+                                    Player tempPlayer = new Player(otherPlayers[i]);
+                                    Hand tempHand = tempPlayer.Hands.Find(x => x.Tag == hand.Tag);
 
-								bool addResult = false;
-								if (ComputerInterpreter.IsWinner(tempPlayer)) // Check for victory
-									addResult = true;
-								else if (RunBruteForce(tempPlayer, otherPlayers, ref steps, false)) // Check next steps
-									addResult = true;
+                                    int result;
+                                    if (ComputerInterpreter.ValidateMove(tempHand, tempOtherHand, op, out result))
+                                    {
+                                        tempHand.Value = result;
 
-								if(addResult)
-								{
-									Results results = new Results();
-									results.HandChanged = currentPlayer.Hands[j];
-									results.HandUsed = otherHand;
-									results.OperationType = op;
-									results.OpponentUsed = otherPlayer;
+                                        // Winning move
+                                        if (ComputerInterpreter.IsWinner(tempPlayer))
+                                            return false;
 
-                                    bruteResults.Add(new Tuple<Results, int, int>(results, checkValue, steps));
+                                        // Readd player to list of other players
+                                        List<Player> newOtherPlayers = new List<Player>();
+                                        otherPlayers.ForEach(x => newOtherPlayers.Add(new Player(x)));
+                                        newOtherPlayers.RemoveAll(x => x.Name.Equals(tempPlayer.Name));
+                                        newOtherPlayers.Add(tempPlayer);
+
+                                        BruteResult bruteResult;
+                                        int newSteps = steps;
+
+                                        tasks.Add(Task.Run(() =>
+                                        {
+                                            if (BruteForce(currentPlayer, newOtherPlayers, ref newSteps, maxSteps, !isCurrentPlayerTurn, out bruteResult))
+                                            {
+                                                lock (locker)
+                                                {
+                                                    bruteResults.Add(bruteResult);
+                                                }
+                                            }
+                                        }));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Iterate steps
+                steps++;
+
+                foreach (Hand hand in currentPlayer.Hands)
+                {
+                    foreach (Player otherPlayer in otherPlayers)
+                    {
+                        foreach (Hand otherHand in otherPlayer.Hands)
+                        {
+                            foreach (Results.Operations op in Enum.GetValues(typeof(Results.Operations)))
+                            {
+                                if (op == Results.Operations.NotSet)
+                                    continue;
+                                
+                                // Clone player/hands to prevent update
+                                Player tempPlayer = new Player(currentPlayer);
+                                Hand tempHand = tempPlayer.Hands.Find(x => x.Tag == hand.Tag);
+
+                                int result;
+                                if (ComputerInterpreter.ValidateMove(hand, otherHand, op, out result))
+                                {
+                                    tempHand.Value = result;
+                                    BruteResult bruteResult;
+                                    int newSteps = steps;
+
+                                    tasks.Add(Task.Run(() =>
+                                    {
+                                        if (BruteForce(tempPlayer, otherPlayers, ref newSteps, maxSteps, !isCurrentPlayerTurn, out bruteResult))
+                                        {
+                                            if (bruteResult == null)
+                                            {
+                                                bruteResult = new BruteResult();
+                                                bruteResult.MoveResult = new Results();
+                                                bruteResult.Steps = newSteps;
+                                            }
+
+                                            // Update the result with the current move set
+                                            bruteResult.MoveResult.HandChanged = currentPlayer.Hands.Find(x => x.Tag == hand.Tag);
+                                            bruteResult.MoveResult.HandUsed = otherHand;
+                                            bruteResult.MoveResult.OperationType = op;
+                                            bruteResult.MoveResult.OpponentUsed = otherPlayer;
+                                            bruteResult.NewMoveValue = result;
+                                            bruteResults.Add(bruteResult);
+
+                                            // Add result
+                                            lock (locker)
+                                            {
+                                                bruteResults.Add(bruteResult);
+                                            }
+                                        }
+                                    }));
                                 }
                             }
                         }
@@ -62,26 +184,21 @@ namespace Numbers.Controllers
                 }
             }
 
+            // Wait for tasks to complete
+            Task.WaitAll(tasks.ToArray());
+
+            if (bruteResults.Count == 0)
+                return false;
+
             // Find the move with the least steps
-            Tuple<Results, int, int> bestResult = null;
-            foreach (Tuple<Results, int, int> bruteResult in bruteResults)
-                bestResult = bestResult == null ? bruteResult : bestResult.Item3 > bruteResult.Item3 ? bruteResult : bestResult;
-
-			Results resultToReturn;
-
-			// no best result... go random!
-			if (bestResult == null)
-				resultToReturn = Random(currentPlayer, otherPlayers);
-			else
-			{
-				bestResult.Item1.HandChanged.Value = bestResult.Item2;
-				resultToReturn = bestResult.Item1;
-			}
-
-			return resultToReturn;
-		}
-		
-		public static void Aggressive()
+            int minSteps = bruteResults.Min(x => x.Steps);
+            List<BruteResult> bestBruteResults = bruteResults.FindAll(x => x.Steps == minSteps);
+            returnResult = bestBruteResults.Count == 1 ? bestBruteResults[0] : bestBruteResults[(new Random()).Next(0, bestBruteResults.Count - 1)];
+            
+            return true;
+        }
+        
+        public static void Aggressive()
 		{
 
 
@@ -91,105 +208,6 @@ namespace Numbers.Controllers
         public static void Defensive()
         {
 
-        }
-
-		private static bool RunBruteForce(Player currentPlayer, List<Player> otherPlayers, ref int steps, bool isCurrentPlayerTurn)
-		{
-			if (ComputerInterpreter.IsWinner(currentPlayer))
-				return true;
-
-            foreach (Player otherPlayer in otherPlayers)
-                if (ComputerInterpreter.IsWinner(otherPlayer))
-                    return false;
-
-			// Bootstrap
-			if (steps > 10)
-				return false;
-			
-			// Clone player/hands to prevent update
-			Player tempPlayer = new Player(currentPlayer);
-			List<Player> tempOtherPlayers = new List<Player>();
-			otherPlayers.ForEach(x => tempOtherPlayers.Add(new Player(x)));
-
-			if (isCurrentPlayerTurn)
-			{
-				// Add to steps
-				steps++;
-
-				// Iterate through all opponents
-				for (int i = 0; i < tempOtherPlayers.Count; i++)
-				{
-					Player tempOtherPlayer = tempOtherPlayers[i];
-
-                    // Iterate through all current hands
-                    for (int j = 0; j < tempPlayer.Hands.Count; j++)
-                    {
-                        Hand tempHand = tempPlayer.Hands[j];
-
-						// Iterate through all other players' hands
-						for (int k = 0; k < tempOtherPlayer.Hands.Count; k++)
-						{
-							// Iterate through all operators
-							foreach (Results.Operations op in Enum.GetValues(typeof(Results.Operations)))
-							{
-								int result = -1;
-								if (ComputerInterpreter.ValidateMove(tempHand, tempOtherPlayer.Hands[k], op, out result))
-								{
-									tempHand.Value = result;
-									if (RunBruteForce(tempPlayer, tempOtherPlayers, ref steps, !isCurrentPlayerTurn))
-										return true;
-								}
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				// Iterate through all opponents
-				for (int i = 0; i < tempOtherPlayers.Count; i++)
-				{
-					// Create a collection that contains the other players and the current player
-					List<Player> tempOtherAndCurrentPlayers = new List<Player>();
-					tempOtherPlayers.ForEach(x => tempOtherAndCurrentPlayers.Add(new Player(x)));
-					tempOtherAndCurrentPlayers.Add(new Player(currentPlayer)); // add "current" player
-					tempOtherAndCurrentPlayers.RemoveAt(i); // remove "current other" player
-
-                    // Clone current player/hands to prevent update
-                    Player tempOtherPlayer = tempOtherPlayers[i];
-
-                    // Iterate through all current hands
-                    for (int j = 0; j < tempOtherPlayer.Hands.Count; j++)
-                    {
-                        Hand tempOtherHand = tempOtherPlayer.Hands[j];
-
-                        // Iterate through all other (and current) players
-                        for (int k = 0; k < tempOtherAndCurrentPlayers.Count; k++)
-                        {
-                            Player tempOtherOrCurrentPlayer = tempOtherAndCurrentPlayers[k];
-
-							// Iterate through all other (and current) players' hands
-							for (int l = 0; l < tempOtherOrCurrentPlayer.Hands.Count; l++)
-							{
-								// Iterate through all operators
-								foreach (Results.Operations op in Enum.GetValues(typeof(Results.Operations)))
-								{
-									int result = -1;
-									if (ComputerInterpreter.ValidateMove(tempOtherHand, tempOtherOrCurrentPlayer.Hands[l], op, out result))
-									{
-										tempOtherHand.Value = result;
-										if (RunBruteForce(tempPlayer, tempOtherPlayers, ref steps, !isCurrentPlayerTurn))
-											return true;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-            // Unable to find path
-            return false;
         }
 
         public static Results Random(Player currentPlayer, List<Player> otherPlayers)

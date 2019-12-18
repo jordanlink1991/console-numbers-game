@@ -43,7 +43,10 @@ namespace Numbers
 					Console.Write(BoardView.FormatInputRequest(currentPlayer));
 					string input = Console.ReadLine();
 
-					result = PersonInterpreter.ValidateMove(currentPlayer, otherPlayers, input);
+                    // Clear existing input
+                    Console.Clear();
+
+                    result = PersonInterpreter.ValidateMove(currentPlayer, otherPlayers, input);
 					if (result.Help)
 					{
 						Console.WriteLine(BoardView.FormatHelp());
@@ -56,13 +59,21 @@ namespace Numbers
 					}
 				}
 				else
-				{
-					result = AI.Random(currentPlayer, otherPlayers);
-				}
+                {
+                    Console.WriteLine("Thinking...");
 
-				Console.Clear();
+                    // Clear existing input
+                    //Console.Clear();
+
+                    // Determine move
+                    //result = AI.Random(currentPlayer, otherPlayers);
+                    result = AI.BruteForce(currentPlayer, otherPlayers, 2);
+                }
+
+                // Write action
 				Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
 
+                // Detect winner
 				if (BaseInterpreter.IsWinner(currentPlayer))
 				{
 					// Print state of Board
