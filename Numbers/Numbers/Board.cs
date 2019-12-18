@@ -71,7 +71,8 @@ namespace Numbers
 			while (true)
 			{
 				// Print state of Board
-				Console.WriteLine(BoardView.FormatPlayer(players));
+				//Console.WriteLine(BoardView.FormatPlayer(players));
+				Console.WriteLine(BoardView.FormatBoard(players));
 
 				Results result;
 				if (currentPlayer.IsHuman)
@@ -97,7 +98,7 @@ namespace Numbers
 				}
 				else
                 {
-                    Console.WriteLine("Thinking...");
+                    Console.WriteLine(BoardView.FormatThinking(currentPlayer));
 
                     // Determine move
                     if (level.ToLower() == "easy")
@@ -118,7 +119,7 @@ namespace Numbers
 				if (BaseInterpreter.IsWinner(currentPlayer))
 				{
 					// Print state of Board
-					Console.WriteLine(BoardView.FormatPlayer(players));
+					Console.WriteLine(BoardView.FormatBoard(players));
 					Console.WriteLine(BoardView.FormatVictory(currentPlayer));
 					break;
 				}
