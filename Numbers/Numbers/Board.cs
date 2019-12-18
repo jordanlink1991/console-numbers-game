@@ -101,13 +101,12 @@ namespace Numbers
                     Console.WriteLine(BoardView.FormatThinking(currentPlayer));
 
                     // Determine move
-                    if (level.ToLower() == "easy")
-                        result = AI.Random(currentPlayer, otherPlayers);
-                    else if (level.ToLower() == "medium")
+                    if (level.ToLower() == "medium")
                         result = AI.BruteForce(currentPlayer, otherPlayers, 1);
                     else if (level.ToLower() == "hard")
                         result = AI.BruteForce(currentPlayer, otherPlayers, 2);
-
+                    else
+                        result = AI.Random(currentPlayer, otherPlayers);
                     // Clear existing input
                     Console.Clear();
                 }
