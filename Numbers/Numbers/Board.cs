@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Numbers.Controllers;
 
@@ -67,8 +68,10 @@ namespace Numbers
 			List<Player> otherPlayers = new List<Player>(players);
 			otherPlayers.RemoveAt(0);
 
-			// Run game
-			while (true)
+            //Queue for history moves
+            Queue q = new Queue();
+            // Run game
+            while (true)
 			{
 				// Print state of Board
 				//Console.WriteLine(BoardView.FormatPlayer(players));
@@ -111,11 +114,18 @@ namespace Numbers
                     Console.Clear();
                 }
 
+                //5 history moves
+                q.Enqueue(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
+                if (q.Count > 5)
+                    q.Dequeue();
+                foreach (string s in q)
+                    Console.WriteLine(s);
+
                 // Write action
-				Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
+                //Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
 
                 // Detect winner
-				if (BaseInterpreter.IsWinner(currentPlayer))
+                if (BaseInterpreter.IsWinner(currentPlayer))
 				{
 					// Print state of Board
 					Console.WriteLine(BoardView.FormatBoard(players));
