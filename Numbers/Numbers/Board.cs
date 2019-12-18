@@ -73,11 +73,18 @@ namespace Numbers
             // Run game
             while (true)
 			{
-				// Print state of Board
-				//Console.WriteLine(BoardView.FormatPlayer(players));
-				Console.WriteLine(BoardView.FormatBoard(players));
+                // Print state of Board
+                //Console.WriteLine(BoardView.FormatPlayer(players));
+              
+                Console.WriteLine(BoardView.FormatBoard(players));
+                if (q.Count > 5)
+                    q.Dequeue();
+                foreach (string s in q)
+                    Console.Write(s);
 
-				Results result;
+                Console.WriteLine();
+
+                Results result;
 				if (currentPlayer.IsHuman)
 				{
 					// Read input
@@ -116,10 +123,6 @@ namespace Numbers
 
                 //5 history moves
                 q.Enqueue(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
-                if (q.Count > 5)
-                    q.Dequeue();
-                foreach (string s in q)
-                    Console.WriteLine(s);
 
                 // Write action
                 //Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
