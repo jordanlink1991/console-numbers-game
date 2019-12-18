@@ -109,6 +109,28 @@ public class BaseInterpreter
         return false;
     }
 
+    public static string CheckConfig(string humans, string computers, string hands, string level)
+    {
+        int human = 0;
+        int computer = 0;
+        int hand = 0;
+        if (!int.TryParse(humans, out human))
+            return "Invalid human player number, Please try again";
+        else if (!int.TryParse(computers, out computer))
+            return "Invalid computer player number, Please try again";
+        else if (!int.TryParse(hands, out hand))
+            return "Invalid hand number, Please try again";
+        else if (!(level.ToLower() == "easy" || level.ToLower() == "medium" || level.ToLower() == "hard"))
+            return "Invalid Difficulty Level, Please try again";
+
+        if (hand < 2)
+            return "Hand has to be at least 2, please try again";
+        else if ((human + computer) * hand > 12)
+            return "Players and Hands exceed threshold, Please try again";
+
+        return "";
+    }
+
     #endregion Winning Hand Check
 
 }

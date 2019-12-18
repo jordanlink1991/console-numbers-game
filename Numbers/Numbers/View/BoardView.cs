@@ -118,6 +118,13 @@ public static class BoardView
         manual += "The Application will let you know if your input is valid, but keep in mind that other players can use your hand to win.\n";
         manual += "Press any key to begin.\n";
         manual += "Have Fun!!!!\n";
+        manual += "\n\n";
+        manual += "Max total players: 6 \n";
+        manual += "Number of Human player (min 0, max 6)\n";
+        manual += "Number of Computer player (min 0, max 6)\n";
+        manual += "Number of Hands (min 2, max 6)\n";
+        manual += "Total number of players * number of hands cannot exceed 12";
+        manual += "Level of Difficulty (Easy, Medium, Hard)\n";
         manual += "********************\n";
         return manual;
     }
