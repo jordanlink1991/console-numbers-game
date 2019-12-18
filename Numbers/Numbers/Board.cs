@@ -62,12 +62,12 @@ namespace Numbers
                 {
                     Console.WriteLine("Thinking...");
 
-                    // Clear existing input
-                    //Console.Clear();
-
                     // Determine move
                     //result = AI.Random(currentPlayer, otherPlayers);
                     result = AI.BruteForce(currentPlayer, otherPlayers, 2);
+
+                    // Clear existing input
+                    Console.Clear();
                 }
 
                 // Write action
