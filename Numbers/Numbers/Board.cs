@@ -19,11 +19,48 @@ namespace Numbers
 			//		return;
 
 			Console.WriteLine(BoardView.FormatWelcome());
-            Console.ReadLine();
+
+            //Read user config
+            string humans;
+            string computers;
+            string hands;
+            string level;
+            int human;
+            int computer;
+            int hand;
+
+            Console.WriteLine("Number of Human Players: ");
+            humans = Console.ReadLine();
+            Console.WriteLine("Number of Computer Players: ");
+            computers = Console.ReadLine();
+            Console.WriteLine("Number of Hands: ");
+            hands = Console.ReadLine();
+            Console.WriteLine("Difficulty Level: ");
+            level = Console.ReadLine();
+
+            while (BaseInterpreter.CheckConfig(humans, computers, hands, level) != "")
+            {
+                Console.WriteLine();
+                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("ERROR - " + BaseInterpreter.CheckConfig(humans, computers, hands, level));
+                Console.WriteLine("-------------------------------------------\n");
+                Console.WriteLine("Number of Human Players: ");
+                humans = Console.ReadLine();
+                Console.WriteLine("Number of Computer Players: ");
+                computers = Console.ReadLine();
+                Console.WriteLine("Number of Hands: ");
+                hands = Console.ReadLine();
+                Console.WriteLine("Difficulty Level: ");
+                level = Console.ReadLine();
+            }
+
             Console.Clear();
+            int.TryParse(humans, out human);
+            int.TryParse(computers, out computer);
+            int.TryParse(hands, out hand);
 
 			// Initialize players
-			List<Player> players = InitializePlayers(3, 0, 2);
+			List<Player> players = InitializePlayers(human, computer, hand);
 
 			// Pop the first player
 			Player currentPlayer = players[0];
@@ -64,9 +101,12 @@ namespace Numbers
                     Console.WriteLine(BoardView.FormatThinking(currentPlayer));
 
                     // Determine move
-                    //result = AI.Random(currentPlayer, otherPlayers);
-                    result = AI.BruteForce(currentPlayer, otherPlayers, 1);
-
+                    if (level.ToLower() == "medium")
+                        result = AI.BruteForce(currentPlayer, otherPlayers, 1);
+                    else if (level.ToLower() == "hard")
+                        result = AI.BruteForce(currentPlayer, otherPlayers, 2);
+                    else
+                        result = AI.Random(currentPlayer, otherPlayers);
                     // Clear existing input
                     Console.Clear();
                 }
