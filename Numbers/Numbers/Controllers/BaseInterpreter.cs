@@ -109,7 +109,9 @@ public class BaseInterpreter
         return false;
     }
 
-    public static string CheckConfig(string humans, string computers, string hands, string level)
+	public static string CheckConfig(string humans, string computers, string hands) => CheckConfig(humans, computers, hands, string.Empty);
+
+	public static string CheckConfig(string humans, string computers, string hands, string level)
     {
         int human = 0;
         int computer = 0;
@@ -120,15 +122,29 @@ public class BaseInterpreter
             return "Invalid computer player number, Please try again";
         else if (!int.TryParse(hands, out hand))
             return "Invalid hand number, Please try again";
-        else if (!(level.ToLower() == "easy" || level.ToLower() == "medium" || level.ToLower() == "hard"))
+        else if (!string.IsNullOrEmpty(level) && !(level.ToLower() == "easy" || level.ToLower() == "medium" || level.ToLower() == "hard"))
             return "Invalid Difficulty Level, Please try again";
 
         if (hand < 2)
-            return "Hand has to be at least 2, please try again";
-        else if ((human + computer) * hand > 12)
+            return "Hands per player has to be at least 2, please try again";
+		else if (hand > 6)
+			return "Hands per player cannot exceed 6, please try again";
+		else if (human < 0)
+			return "Cannot have negative human players...";
+		else if (human > 6)
+			return "Human players cannot exceed 6, please try again";
+		else if (computer < 0)
+			return "Cannot have negative computer players...";
+		else if (computer > 6)
+			return "Computer players cannot exceed 6, please try again";
+		else if ((human + computer) < 2)
+			return "Total players has to be at least 2, please try again";
+		else if ((human + computer) > 6)
+			return "Total players cannot exceed 6, please try again";
+		else if ((human + computer) * hand > 12)
             return "Players and Hands exceed threshold, Please try again";
 
-        return "";
+        return string.Empty;
     }
 
     #endregion Winning Hand Check
