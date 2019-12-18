@@ -22,46 +22,51 @@ namespace Numbers
 			Console.WriteLine(BoardView.FormatWelcome());
 
             //Read user config
-            string humans;
-            string computers;
-            string hands;
-            string level;
-            int human;
-            int computer;
-            int hand;
+            string humanPlayerCountInput, computerPlayerCountInput, handsPerPlayerCountInput, computerPlayerDifficultyLevelInput = string.Empty;
+			int humanPlayerCount = 0, computerPlayerCount = 0, handsPerPlayerCount = 0;
 
-            Console.WriteLine("Number of Human Players: ");
-            humans = Console.ReadLine();
-            Console.WriteLine("Number of Computer Players: ");
-            computers = Console.ReadLine();
-            Console.WriteLine("Number of Hands: ");
-            hands = Console.ReadLine();
-            Console.WriteLine("Difficulty Level: ");
-            level = Console.ReadLine();
-
-            while (BaseInterpreter.CheckConfig(humans, computers, hands, level) != "")
+			bool okToStart = false;
+			string errorMessage = string.Empty;
+            while (!okToStart)
             {
-                Console.WriteLine();
-                Console.WriteLine("-------------------------------------------");
-                Console.WriteLine("ERROR - " + BaseInterpreter.CheckConfig(humans, computers, hands, level));
-                Console.WriteLine("-------------------------------------------\n");
-                Console.WriteLine("Number of Human Players: ");
-                humans = Console.ReadLine();
-                Console.WriteLine("Number of Computer Players: ");
-                computers = Console.ReadLine();
-                Console.WriteLine("Number of Hands: ");
-                hands = Console.ReadLine();
-                Console.WriteLine("Difficulty Level: ");
-                level = Console.ReadLine();
-            }
+				if (!string.IsNullOrEmpty(errorMessage))
+				{
+					Console.WriteLine();
+					Console.WriteLine("-------------------------------------------");
+					Console.WriteLine("ERROR - " + errorMessage);
+					Console.WriteLine("-------------------------------------------\n");
+				}
+
+                Console.Write("Number of Human Players (0-6): ");
+                humanPlayerCountInput = Console.ReadLine();
+                Console.Write("Number of Computer Players (0-6): ");
+                computerPlayerCountInput = Console.ReadLine();
+                Console.Write("Number of Hands (2-6): ");
+                handsPerPlayerCountInput = Console.ReadLine();
+
+				int.TryParse(humanPlayerCountInput, out humanPlayerCount);
+				int.TryParse(computerPlayerCountInput, out computerPlayerCount);
+				int.TryParse(handsPerPlayerCountInput, out handsPerPlayerCount);
+
+				if (computerPlayerCount > 0)
+				{
+					Console.Write("Computer Difficulty Level (easy, medium, hard): ");
+					computerPlayerDifficultyLevelInput = Console.ReadLine();
+					errorMessage = BaseInterpreter.CheckConfig(humanPlayerCountInput, computerPlayerCountInput, handsPerPlayerCountInput, computerPlayerDifficultyLevelInput ?? string.Empty);
+				}
+				else
+				{
+					errorMessage = BaseInterpreter.CheckConfig(humanPlayerCountInput, computerPlayerCountInput, handsPerPlayerCountInput);
+				}
+
+				if(string.IsNullOrEmpty(errorMessage))
+					okToStart = true;
+			}
 
             Console.Clear();
-            int.TryParse(humans, out human);
-            int.TryParse(computers, out computer);
-            int.TryParse(hands, out hand);
 
 			// Initialize players
-			List<Player> players = InitializePlayers(human, computer, hand);
+			List<Player> players = InitializePlayers(humanPlayerCount, computerPlayerCount, handsPerPlayerCount);
 
 			// Pop the first player
 			Player currentPlayer = players[0];
@@ -110,15 +115,25 @@ namespace Numbers
                 {
                     Console.WriteLine(BoardView.FormatThinking(currentPlayer));
 
-                    // Determine move
-                    if (level.ToLower() == "medium")
+					int thinkTimerMilliseconds = 1500;
+
+					// Determine move
+					DateTime thinkStart = DateTime.Now;
+                    if (computerPlayerDifficultyLevelInput.ToLower() == "medium")
                         result = AI.BruteForce(currentPlayer, otherPlayers, 1);
-                    else if (level.ToLower() == "hard")
+                    else if (computerPlayerDifficultyLevelInput.ToLower() == "hard")
                         result = AI.BruteForce(currentPlayer, otherPlayers, 2);
                     else
                         result = AI.Random(currentPlayer, otherPlayers);
-                    // Clear existing input
-                    Console.Clear();
+					DateTime thinkEnd = DateTime.Now;
+
+					// Prevent screen flashing
+					int thinkTime = (thinkEnd - thinkStart).Milliseconds;
+					if (thinkTime < thinkTimerMilliseconds)
+						System.Threading.Thread.Sleep(thinkTimerMilliseconds - thinkTime);
+
+					// Clear existing input
+					Console.Clear();
                 }
 
                 //5 history moves
