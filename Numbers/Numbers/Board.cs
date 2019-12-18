@@ -44,6 +44,11 @@ namespace Numbers
                 Console.Write("Number of Hands (2-6): ");
                 handsPerPlayerCountInput = Console.ReadLine();
 
+				// Defaults
+				humanPlayerCountInput = string.IsNullOrEmpty(humanPlayerCountInput) ? "0" : humanPlayerCountInput;
+				computerPlayerCountInput = string.IsNullOrEmpty(computerPlayerCountInput) ? "0" : computerPlayerCountInput;
+				handsPerPlayerCountInput = string.IsNullOrEmpty(handsPerPlayerCountInput) ? "2" : handsPerPlayerCountInput;
+
 				int.TryParse(humanPlayerCountInput, out humanPlayerCount);
 				int.TryParse(computerPlayerCountInput, out computerPlayerCount);
 				int.TryParse(handsPerPlayerCountInput, out handsPerPlayerCount);
@@ -52,6 +57,7 @@ namespace Numbers
 				{
 					Console.Write("Computer Difficulty Level (easy, medium, hard): ");
 					computerPlayerDifficultyLevelInput = Console.ReadLine();
+					computerPlayerDifficultyLevelInput = string.IsNullOrEmpty(computerPlayerDifficultyLevelInput) ? "easy" : computerPlayerDifficultyLevelInput;
 					errorMessage = BaseInterpreter.CheckConfig(humanPlayerCountInput, computerPlayerCountInput, handsPerPlayerCountInput, computerPlayerDifficultyLevelInput ?? string.Empty);
 				}
 				else

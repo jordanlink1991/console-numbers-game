@@ -109,20 +109,21 @@ public class BaseInterpreter
         return false;
     }
 
-	public static string CheckConfig(string humans, string computers, string hands) => CheckConfig(humans, computers, hands, string.Empty);
+	public static string CheckConfig(string humans, string computers, string hands) => CheckConfig(humans, computers, hands, null);
 
 	public static string CheckConfig(string humans, string computers, string hands, string level)
     {
         int human = 0;
         int computer = 0;
         int hand = 0;
-        if (!int.TryParse(humans, out human))
+
+		if (!int.TryParse(humans, out human))
             return "Invalid human player number, Please try again";
         else if (!int.TryParse(computers, out computer))
             return "Invalid computer player number, Please try again";
         else if (!int.TryParse(hands, out hand))
             return "Invalid hand number, Please try again";
-        else if (!string.IsNullOrEmpty(level) && !(level.ToLower() == "easy" || level.ToLower() == "medium" || level.ToLower() == "hard"))
+        else if (level != null && !(level.ToLower() == "easy" || level.ToLower() == "medium" || level.ToLower() == "hard"))
             return "Invalid Difficulty Level, Please try again";
 
         if (hand < 2)
@@ -133,7 +134,7 @@ public class BaseInterpreter
 			return "Cannot have negative human players...";
 		else if (human > 6)
 			return "Human players cannot exceed 6, please try again";
-		else if (computer < 0)
+		if (computer < 0)
 			return "Cannot have negative computer players...";
 		else if (computer > 6)
 			return "Computer players cannot exceed 6, please try again";
