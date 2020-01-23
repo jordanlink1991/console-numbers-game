@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Numbers.Controllers;
 
@@ -15,86 +14,29 @@ namespace Numbers
 
 		static void Main(string[] args)
 		{
-			Console.Clear();
+			// var result = Interpretor.ValidateGame(args)
+			// if(result.IsInvalid)
+			//		return;
+
 			Console.WriteLine(BoardView.FormatWelcome());
-
-            //Read user config
-            string humanPlayerCountInput, computerPlayerCountInput, handsPerPlayerCountInput, computerPlayerDifficultyLevelInput = string.Empty;
-			int humanPlayerCount = 0, computerPlayerCount = 0, handsPerPlayerCount = 0;
-
-			bool okToStart = false;
-			string errorMessage = string.Empty;
-            while (!okToStart)
-            {
-				if (!string.IsNullOrEmpty(errorMessage))
-				{
-					Console.WriteLine();
-					Console.WriteLine("-------------------------------------------");
-					Console.WriteLine("ERROR - " + errorMessage);
-					Console.WriteLine("-------------------------------------------\n");
-				}
-
-                Console.Write("Number of Human Players (0-6): ");
-                humanPlayerCountInput = Console.ReadLine();
-                Console.Write("Number of Computer Players (0-6): ");
-                computerPlayerCountInput = Console.ReadLine();
-                Console.Write("Number of Hands (2-6): ");
-                handsPerPlayerCountInput = Console.ReadLine();
-
-				// Defaults
-				humanPlayerCountInput = string.IsNullOrEmpty(humanPlayerCountInput) ? "0" : humanPlayerCountInput;
-				computerPlayerCountInput = string.IsNullOrEmpty(computerPlayerCountInput) ? "0" : computerPlayerCountInput;
-				handsPerPlayerCountInput = string.IsNullOrEmpty(handsPerPlayerCountInput) ? "2" : handsPerPlayerCountInput;
-
-				int.TryParse(humanPlayerCountInput, out humanPlayerCount);
-				int.TryParse(computerPlayerCountInput, out computerPlayerCount);
-				int.TryParse(handsPerPlayerCountInput, out handsPerPlayerCount);
-
-				if (computerPlayerCount > 0)
-				{
-					Console.Write("Computer Difficulty Level (easy, medium, hard): ");
-					computerPlayerDifficultyLevelInput = Console.ReadLine();
-					computerPlayerDifficultyLevelInput = string.IsNullOrEmpty(computerPlayerDifficultyLevelInput) ? "easy" : computerPlayerDifficultyLevelInput;
-					errorMessage = BaseInterpreter.CheckConfig(humanPlayerCountInput, computerPlayerCountInput, handsPerPlayerCountInput, computerPlayerDifficultyLevelInput ?? string.Empty);
-				}
-				else
-				{
-					errorMessage = BaseInterpreter.CheckConfig(humanPlayerCountInput, computerPlayerCountInput, handsPerPlayerCountInput);
-				}
-
-				if(string.IsNullOrEmpty(errorMessage))
-					okToStart = true;
-			}
-
+            Console.ReadLine();
             Console.Clear();
 
 			// Initialize players
-			List<Player> players = InitializePlayers(humanPlayerCount, computerPlayerCount, handsPerPlayerCount);
+			List<Player> players = InitializePlayers(1, 1, 2);
 
 			// Pop the first player
 			Player currentPlayer = players[0];
 			List<Player> otherPlayers = new List<Player>(players);
 			otherPlayers.RemoveAt(0);
 
-            //Queue for history moves
-            Queue q = new Queue();
-
-            // Run game
-            while (true)
+			// Run game
+			while (true)
 			{
-                Console.WriteLine(BoardView.FormatBoard(players));
+				// Print state of Board
+				Console.WriteLine(BoardView.FormatPlayer(players));
 
-				// Print move history
-                if (q.Count > 5)
-                    q.Dequeue();
-                foreach (string s in q)
-                    Console.Write(s);
-
-				// Print space between history and input request
-                Console.WriteLine();
-
-				// Get player input or make computer move
-                Results result;
+				Results result;
 				if (currentPlayer.IsHuman)
 				{
 					// Read input
@@ -118,37 +60,24 @@ namespace Numbers
 				}
 				else
                 {
-                    Console.WriteLine(BoardView.FormatThinking(currentPlayer));
+                    Console.WriteLine("Thinking...");
 
-					int thinkTimerMilliseconds = 1500;
+                    // Determine move
+                    //result = AI.Random(currentPlayer, otherPlayers);
+                    result = AI.BruteForce(currentPlayer, otherPlayers, 2);
 
-					// Determine move
-					DateTime thinkStart = DateTime.Now;
-                    if (computerPlayerDifficultyLevelInput.ToLower() == "medium")
-                        result = AI.BruteForce(currentPlayer, otherPlayers, 1);
-                    else if (computerPlayerDifficultyLevelInput.ToLower() == "hard")
-                        result = AI.BruteForce(currentPlayer, otherPlayers, 2);
-                    else
-                        result = AI.Random(currentPlayer, otherPlayers);
-					DateTime thinkEnd = DateTime.Now;
-
-					// Prevent screen flashing
-					int thinkTime = (thinkEnd - thinkStart).Milliseconds;
-					if (thinkTime < thinkTimerMilliseconds)
-						System.Threading.Thread.Sleep(thinkTimerMilliseconds - thinkTime);
-
-					// Clear existing input
-					Console.Clear();
+                    // Clear existing input
+                    Console.Clear();
                 }
 
-                //5 history moves
-                q.Enqueue(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed, result.HandChangedOriginalValue));
+                // Write action
+				Console.WriteLine(BoardView.FormatAction(currentPlayer, result.OpponentUsed, result.OperationType, result.HandChanged, result.HandUsed));
 
                 // Detect winner
-                if (BaseInterpreter.IsWinner(currentPlayer))
+				if (BaseInterpreter.IsWinner(currentPlayer))
 				{
 					// Print state of Board
-					Console.WriteLine(BoardView.FormatBoard(players));
+					Console.WriteLine(BoardView.FormatPlayer(players));
 					Console.WriteLine(BoardView.FormatVictory(currentPlayer));
 					break;
 				}
@@ -159,11 +88,8 @@ namespace Numbers
 				otherPlayers.RemoveAt(0);
             }
 
-			// Request to play again
-			Console.Write("Play again (y)? ");
-			string playAgainInput = Console.ReadLine();
-			if (playAgainInput.ToLower() == "y")
-				Main(args);
+			// Wait for exit
+			Console.ReadKey();
 		}
 
 		/// <summary>

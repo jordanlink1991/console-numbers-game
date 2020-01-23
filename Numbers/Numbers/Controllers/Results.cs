@@ -11,8 +11,7 @@ public class Results
     public Player OpponentUsed { get; set; }
     public Hand HandUsed { get; set; }
     public Hand HandChanged { get; set; }
-	public int HandChangedOriginalValue { get; set; }
-	public enum Errors { InvalidMoveLength, InvalidHand, InvalidNumber, InvalidCalculation, NotSet }
+    public enum Errors { InvalidMoveLength, InvalidHand, InvalidNumber, InvalidCalculation, NotSet }
     public enum Operations {Plus, Minus, Mutiple, Division, NotSet }
 
     public Results()

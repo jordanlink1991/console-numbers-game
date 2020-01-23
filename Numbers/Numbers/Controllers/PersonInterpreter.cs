@@ -69,14 +69,12 @@ public class PersonInterpreter : BaseInterpreter
                 if (results.OperationType != Results.Operations.NotSet)
                     break;
 
-				int originalValue = actionPlayerHand.Value;
                 if (CheckAdd(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Plus;
                     results.OpponentUsed = opponent;
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
-					results.HandChangedOriginalValue = originalValue;
                 }
                 else if (CheckSubtract(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
@@ -84,24 +82,21 @@ public class PersonInterpreter : BaseInterpreter
                     results.OpponentUsed = opponent;
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
-					results.HandChangedOriginalValue = originalValue;
-				}
+                }
                 else if (CheckMultiply(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Mutiple;
                     results.OpponentUsed = opponent;
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
-					results.HandChangedOriginalValue = originalValue;
-				}
+                }
                 else if (CheckDivide(actionPlayerHand, oppoHand, out checkValue) && UpdateHand(actionPlayerHand, checkValue, handGoal))
                 {
                     results.OperationType = Results.Operations.Division;
                     results.OpponentUsed = opponent;
                     results.HandChanged = actionPlayerHand;
                     results.HandUsed = oppoHand;
-					results.HandChangedOriginalValue = originalValue;
-				}
+                }
             }
         }
 
